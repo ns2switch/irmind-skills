@@ -1,0 +1,91 @@
+{
+  "format_version": 1,
+  "skill": "windows-lateral-movement",
+  "files": [
+    {
+      "file": "normalized-ecs.jsonl",
+      "parser": "parser-ecs"
+    }
+  ],
+  "cluster": null,
+  "selected_source": 0,
+  "expected_file": "expanded.json",
+  "script": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "skill_read",
+          "args": {
+            "name": "windows-lateral-movement"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "graph_summary",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "4624",
+            "limit": "20",
+            "event_category": "authentication",
+            "event_type": "start",
+            "event_outcome": "success",
+            "entity_role": "actor"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "raw_records",
+          "args": {
+            "hash": "$source:0",
+            "index": "0",
+            "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "hypothesis",
+            "value": "Successful synthetic RDP logon; pass-the-hash is not established",
+            "evidence_hash": "$source:0",
+            "supporting_evidence": "$source:0"
+          }
+        },
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "technique",
+            "value": "T1021.001",
+            "technique_id": "T1021.001",
+            "evidence_hash": "$source:0"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Successful synthetic RDP logon; pass-the-hash is not established Evidence: $source:0",
+      "calls": []
+    }
+  ]
+}

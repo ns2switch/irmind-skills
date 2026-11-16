@@ -1,0 +1,94 @@
+{
+  "format_version": 1,
+  "skill": "linux-persistence",
+  "files": [
+    {
+      "file": "audit.log",
+      "parser": "parser-linux"
+    },
+    {
+      "file": "collected-cron.json",
+      "parser": "parser-json"
+    }
+  ],
+  "cluster": null,
+  "selected_source": 0,
+  "expected_file": "expanded.json",
+  "script": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "skill_read",
+          "args": {
+            "name": "linux-persistence"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "graph_summary",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "crontab",
+            "limit": "20",
+            "event_category": "process",
+            "event_type": "start",
+            "event_outcome": "success"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "raw_records",
+          "args": {
+            "hash": "$source:0",
+            "index": "0",
+            "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "hypothesis",
+            "value": "Collected synthetic cron configuration and crontab execution",
+            "evidence_hash": "$source:0",
+            "supporting_evidence": "$source:0"
+          }
+        },
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "technique",
+            "value": "T1053.003",
+            "technique_id": "T1053.003",
+            "evidence_hash": "$source:0"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Collected synthetic cron configuration and crontab execution Evidence: $source:0",
+      "calls": []
+    }
+  ]
+}

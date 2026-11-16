@@ -1,0 +1,95 @@
+{
+  "format_version": 1,
+  "skill": "linux-webshell",
+  "files": [
+    {
+      "file": "access.log",
+      "parser": "parser-linux"
+    },
+    {
+      "file": "audit.log",
+      "parser": "parser-linux"
+    }
+  ],
+  "cluster": null,
+  "selected_source": 0,
+  "expected_file": "expanded.json",
+  "script": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "skill_read",
+          "args": {
+            "name": "linux-webshell"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "graph_summary",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "GET",
+            "limit": "20",
+            "event_category": "web",
+            "event_type": "access",
+            "event_outcome": "success",
+            "entity_role": "source"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "raw_records",
+          "args": {
+            "hash": "$source:0",
+            "index": "0",
+            "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "hypothesis",
+            "value": "Synthetic HTTP request near web-uid shell execution; causal webshell link is unproven",
+            "evidence_hash": "$source:0",
+            "supporting_evidence": "$source:0"
+          }
+        },
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "technique",
+            "value": "T1059.004",
+            "technique_id": "T1059.004",
+            "evidence_hash": "$source:0"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Synthetic HTTP request near web-uid shell execution; causal webshell link is unproven Evidence: $source:0",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Canonical package and evidence commitments cover the original bytes.
+core/** -text
+catalog/** -text
+episodes/** -text
