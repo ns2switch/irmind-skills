@@ -1,0 +1,91 @@
+{
+  "format_version": 1,
+  "skill": "windows-ransomware",
+  "files": [
+    {
+      "file": "normalized-ecs.jsonl",
+      "parser": "parser-ecs"
+    }
+  ],
+  "cluster": null,
+  "selected_source": 0,
+  "expected_file": "expanded.json",
+  "script": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "skill_read",
+          "args": {
+            "name": "windows-ransomware"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "graph_summary",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "vssadmin",
+            "limit": "20",
+            "event_category": "process",
+            "event_type": "start",
+            "event_outcome": "success",
+            "entity_role": "actor"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "raw_records",
+          "args": {
+            "hash": "$source:0",
+            "index": "0",
+            "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "hypothesis",
+            "value": "Recorded recovery-inhibition command; encryption is not established",
+            "evidence_hash": "$source:0",
+            "supporting_evidence": "$source:0"
+          }
+        },
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "technique",
+            "value": "T1490",
+            "technique_id": "T1490",
+            "evidence_hash": "$source:0"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Recorded recovery-inhibition command; encryption is not established Evidence: $source:0",
+      "calls": []
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "private_marker": "TEMPLATE_EVALUATOR_ONLY",
+  "episodes": {
+    "community-example-method": {
+      "conclusion": "Recorded IAM policy attachment and role assumption",
+      "technique": "T1098"
+    }
+  }
+}

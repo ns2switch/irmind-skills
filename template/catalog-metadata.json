@@ -1,0 +1,10 @@
+{
+  "minimum_irmind_version": "0.5.1",
+  "mappings": [
+    "mapping-json-compat"
+  ],
+  "coverage": {
+    "status": "partial",
+    "description": "Synthetic local JSON template; no real incident validation."
+  }
+}

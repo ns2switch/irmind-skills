@@ -1,0 +1,62 @@
+name: Validate skill packages and synthetic episodes
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+    outputs:
+      irmind_commit:
+        value: ${{ jobs.validate.outputs.irmind_commit }}
+      irmind_version:
+        value: ${{ jobs.validate.outputs.irmind_version }}
+      toolchain:
+        value: ${{ jobs.validate.outputs.toolchain }}
+permissions:
+  contents: read
+concurrency:
+  group: skills-validation-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      irmind_commit: ${{ steps.release.outputs.commit }}
+      irmind_version: ${{ steps.release.outputs.version }}
+      toolchain: ${{ steps.release.outputs.toolchain }}
+    env:
+      CARGO_INCREMENTAL: 0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with: {persist-credentials: false}
+      - name: Resolve and freeze the latest published IRMind release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/resolve_release.py
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: ns2switch/irmind
+          ref: ${{ steps.release.outputs.commit }}
+          path: irmind
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@035fceb3c12fb0c6a9461b52775e16473133e591
+        with: {toolchain: '${{ steps.release.outputs.toolchain }}'}
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          workspaces: irmind -> target
+          shared-key: skills-compiler
+          save-if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+      - uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2
+        with: {tool: cargo-nextest, fallback: none}
+      - name: Check inventory, catalog exclusions and isolated evaluator fixtures
+        run: |
+          python3 -B tools/inventory.py
+          python3 -B -m unittest discover -s tests -v
+      - name: Use the released compiler and engine for every package episode
+        run: python3 -B tools/validate.py --irmind irmind
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: skill-validation-results
+          path: validation-results.json
+          if-no-files-found: error

@@ -1,0 +1,95 @@
+{
+  "format_version": 1,
+  "skill": "k8s-workload-compromise",
+  "files": [
+    {
+      "file": "audit.ndjson",
+      "parser": "parser-kubernetes"
+    },
+    {
+      "file": "falco.ndjson",
+      "parser": "parser-falco"
+    }
+  ],
+  "cluster": "kubernetes:urn:k8s:synthetic",
+  "selected_source": 0,
+  "expected_file": "expanded.json",
+  "script": [
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "skill_read",
+          "args": {
+            "name": "k8s-workload-compromise"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "graph_summary",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "pods",
+            "limit": "20",
+            "event_category": "api",
+            "event_type": "access",
+            "event_outcome": "success",
+            "entity_role": "actor"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "raw_records",
+          "args": {
+            "hash": "$source:0",
+            "index": "0",
+            "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "hypothesis",
+            "value": "Successful synthetic risky pod creation correlates with a Falco source alert; node escape is not established",
+            "evidence_hash": "$source:0",
+            "supporting_evidence": "$source:0"
+          }
+        },
+        {
+          "tool": "case_add_finding",
+          "args": {
+            "kind": "technique",
+            "value": "T1610",
+            "technique_id": "T1610",
+            "evidence_hash": "$source:0"
+          }
+        }
+      ]
+    },
+    {
+      "text": "Successful synthetic risky pod creation correlates with a Falco source alert; node escape is not established Evidence: $source:0",
+      "calls": []
+    }
+  ]
+}

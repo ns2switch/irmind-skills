@@ -13,3 +13,33 @@ No se publican releases de producción del catálogo hasta disponer de su clave 
 [English](README.md)
 
 Licencia MIT OR Apache-2.0.
+
+## Paquetes y validación
+
+Hay **15 paquetes del núcleo** y **0 entradas instalables del catálogo**. Los compromisos originales de v0.5.0 están en [el inventario](core/package-identities.json) y [la referencia inicial](core/baseline.json).
+
+| Skill | Fuentes declaradas |
+| --- | --- |
+| [aws-credential-compromise](core/aws-credential-compromise/SKILL.md) | parser-json |
+| [aws-s3-data-exfiltration](core/aws-s3-data-exfiltration/SKILL.md) | parser-json |
+| [azure-entra-identity-compromise](core/azure-entra-identity-compromise/SKILL.md) | parser-entra, parser-ecs, parser-json |
+| [gcp-service-account-abuse](core/gcp-service-account-abuse/SKILL.md) | parser-gcp-audit, parser-ecs |
+| [k8s-cluster-compromise](core/k8s-cluster-compromise/SKILL.md) | parser-kubernetes, parser-gcp-audit, parser-falco |
+| [k8s-workload-compromise](core/k8s-workload-compromise/SKILL.md) | parser-kubernetes, parser-falco, parser-gcp-audit |
+| [linux-persistence](core/linux-persistence/SKILL.md) | parser-linux, parser-ecs, parser-velociraptor, parser-plaso |
+| [linux-triage](core/linux-triage/SKILL.md) | parser-linux, parser-syslog |
+| [linux-webshell](core/linux-webshell/SKILL.md) | parser-linux, parser-ecs |
+| [malware-execution-triage](core/malware-execution-triage/SKILL.md) | parser-evtx, parser-ecs, parser-eztools, parser-velociraptor, parser-plaso |
+| [network-c2-beaconing](core/network-c2-beaconing/SKILL.md) | parser-zeek, parser-suricata, parser-ecs |
+| [windows-lateral-movement](core/windows-lateral-movement/SKILL.md) | parser-evtx, parser-ecs, parser-hayabusa, parser-velociraptor |
+| [windows-persistence](core/windows-persistence/SKILL.md) | parser-evtx, parser-ecs, parser-eztools, parser-velociraptor, parser-plaso |
+| [windows-ransomware](core/windows-ransomware/SKILL.md) | parser-evtx, parser-ecs, parser-eztools, parser-velociraptor, parser-plaso |
+| [windows-triage](core/windows-triage/SKILL.md) | parser-evtx, parser-hayabusa, parser-eztools, parser-velociraptor, parser-plaso |
+
+[Contribuir](CONTRIBUTING.es.md) · [Plantilla del paquete](template/package/SKILL.md) · [Ejemplo de episodio](template/episode/episode.json)
+
+La CI fija una etiqueta y un commit de la última release publicada de IRMind, incluido su estado preliminar. Usa su compilador real, límites, política, guard y motor; ejecuta los 15 episodios y las pruebas existentes de contenido malicioso, verifica, sella y exporta. No necesita claves de proveedores. Las respuestas privadas están en `episodes/private/` y solo se abren después del modelo.
+
+El índice firmado contiene solo `catalog/`. Los paquetes de `core/` llegan con cada release de IRMind y no se instalan con `/skills install catalog:`. Para proponer mejoras al núcleo abre una PR aquí; un script de desarrollo crea una copia local fijada mediante una PR normal de IRMind. El build de IRMind nunca descarga paquetes.
+
+El ensayo manual produce índices con una clave Ed25519 sintética conocida, bundles de Sigstore, procedencia de GitHub y un SBOM. Solo guarda artefactos de CI: no crea releases ni accede a claves de producción. Para verificar externamente un artefacto usa `cosign verify-blob` con la identidad exacta del workflow y `gh attestation verify`; la identidad del ensayo corresponde a su rama, no a una release de producción.
