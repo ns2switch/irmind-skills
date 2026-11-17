@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import urllib.request
+import urllib.parse
 import zipfile
 
 REPO = 'ns2switch/irmind-skills'
@@ -62,12 +63,26 @@ def unpack(data):
         return json.loads(content)
 
 
+class ArtifactRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, location):
+        parsed=urllib.parse.urlsplit(location)
+        host=parsed.hostname or ''
+        if parsed.scheme!='https' or parsed.username or parsed.password or not any(host.endswith(suffix) for suffix in ('.blob.core.windows.net','.actions.githubusercontent.com','.githubusercontent.com')):
+            raise ValueError('unexpected artifact download host')
+        redirected=super().redirect_request(request,response,code,message,headers,location)
+        if redirected is None:raise ValueError('unexpected artifact redirect')
+        # Signed download URLs authenticate independently of the GitHub API.
+        redirected.remove_header('Authorization')
+        return redirected
+
+
 def api(path, method='GET', payload=None, binary=False):
     if not path.startswith('https://api.github.com/'):
         path='https://api.github.com/repos/'+REPO+'/'+path
     req=urllib.request.Request(path, method=method, data=None if payload is None else json.dumps(payload).encode(), headers={
         'Authorization':'Bearer '+os.environ['GH_TOKEN'], 'Accept':'application/vnd.github+json', 'User-Agent':'irmind-skill-review'})
-    with urllib.request.urlopen(req,timeout=30) as response:
+    opener=urllib.request.build_opener(ArtifactRedirect()) if binary else urllib.request.build_opener()
+    with opener.open(req,timeout=30) as response:
         data=response.read(262145 if binary else 2000001)
     if len(data)>(262144 if binary else 2000000): raise ValueError('API response exceeds limit')
     return data if binary else json.loads(data)

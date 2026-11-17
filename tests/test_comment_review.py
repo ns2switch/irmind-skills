@@ -1,8 +1,14 @@
 import io,json,sys,unittest,zipfile
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from comment_review import render,unpack
+from comment_review import render,unpack,ArtifactRedirect
+import urllib.request
 class ReporterTests(unittest.TestCase):
+ def test_signed_artifact_redirect_uses_no_github_authorization(self):
+  request=urllib.request.Request('https://api.github.com/repos/ns2switch/irmind-skills/actions/artifacts/1/zip',headers={'Authorization':'Bearer synthetic-public-test-value'})
+  redirected=ArtifactRedirect().redirect_request(request,None,302,'Found',{},'https://example.blob.core.windows.net/artifact?signed=fixture')
+  self.assertIsNone(redirected.get_header('Authorization'))
+  with self.assertRaises(ValueError):ArtifactRedirect().redirect_request(request,None,302,'Found',{},'https://other.example/download')
  def sample(self): return {'format_version':1,'packages':[{'family':'catalog','name':'example','version':'1.0.0','sources':['parser-json'],'mappings':['mapping-cloudtrail'],'coverage':'partial'}],'warnings':[{'name':'example','code':'partial-coverage'}],'blocking':[]}
  def test_no_raw_methodology_is_rendered(self):
   self.assertIn('partial-coverage',render(self.sample(),'success','https://github.com/ns2switch/irmind-skills/actions/runs/1'))

@@ -80,4 +80,6 @@ jobs:
           cp tools/catalog_release_pty.rs irmind/crates/bin/tests/catalog_release_pty.rs
           export IRMIND_CATALOG_PTY_BINARY="$IRMIND_DEMO_PTY_BINARY"
           export IRMIND_SKILLS_REPOSITORY="$PWD"
+          export IRMIND_CATALOG_RELEASE_DIR="$PWD/verified-catalog"
           cargo test --manifest-path irmind/Cargo.toml -p irmind --test catalog_release_pty --all-features --profile ci --locked -- --nocapture
+          cargo test --manifest-path irmind/Cargo.toml -p irmind-infra --lib catalog::tests --profile ci --locked
