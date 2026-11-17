@@ -52,3 +52,24 @@ actualizar o desactivar. Retirar una clave compilada exige una release de IRMind
 Los problemas se corrigen con texto técnico neutro y se publican según la política
 pre-1.0 de IRMind. Mantén privados los informes sensibles; nunca publiques secretos
 ni datos de incidentes. El mantenedor decide si retirar, corregir o rotar la clave.
+
+## Registrar las comprobaciones de la release
+
+Tras publicar, lanza el workflow nativo con tags exactos:
+
+```sh
+gh workflow run verify-published.yml -R ns2switch/irmind-skills --ref main -f irmind_tag=v0.5.4 -f catalog_tag=v0.1.0
+```
+
+Instala la release firmada de IRMind, verifica el catálogo de forma independiente
+y prueba el ejecutable publicado en Linux, macOS y Windows. Un índice alterado o
+una firma de otra clave no deben dejar una admisión firmada. El contrato con
+historial sintético firmado comprueba que un descenso requiere la confirmación
+separada del analista; la primera release de producción no tiene un índice anterior
+que reproducir.
+
+Una corrección aumenta la versión del paquete y explica el cambio en la descripción
+de cobertura de `metadata/<nombre>.json`, dentro del límite de 512 bytes existente.
+Esa descripción queda firmada en el índice. La retirada completa elimina la entrada
+del siguiente índice de secuencia mayor y se explica en las notas. No añadas
+instrucciones sin firma ni campos que el formato del índice no soporte.
