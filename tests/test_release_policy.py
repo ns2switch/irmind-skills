@@ -2,6 +2,15 @@ from pathlib import Path
 import unittest
 ROOT=Path(__file__).resolve().parents[1]
 class ReleasePolicyTests(unittest.TestCase):
+ def test_environment_must_have_a_reviewer_and_only_version_tags(self):
+  from release_config import validate_environment
+  good={'protection_rules':[{'type':'required_reviewers','reviewers':[{'type':'User','reviewer':{'login':'ns2switch'}}]}], 'deployment_branch_policy':{'protected_branches':False,'custom_branch_policies':True}}
+  tags={'branch_policies':[{'type':'tag','name':'v*'}]}
+  validate_environment(good,tags)
+  for bad in ({},dict(good,protection_rules=[]),dict(good,deployment_branch_policy=None)):
+   with self.assertRaises(ValueError):validate_environment(bad,tags)
+  for rules in ([],[{'type':'branch','name':'main'}],[{'type':'tag','name':'*'}]):
+   with self.assertRaises(ValueError):validate_environment(good,{'branch_policies':rules})
  def test_seed_is_scoped_to_one_protected_signer_step(self):
   s=(ROOT/'.github/workflows/release.yml').read_text()
   self.assertEqual(s.count('secrets.CATALOG_ED25519_SEED_HEX'),1)
