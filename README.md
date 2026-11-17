@@ -43,3 +43,7 @@ CI freezes a tag and commit of the latest published IRMind release, including pr
 The signed index contains only `catalog/`. Packages under `core/` arrive with each IRMind release and are not installable through `/skills install catalog:`. Propose core improvements here; a development script creates a pinned local mirror through a normal IRMind PR. The IRMind build never downloads packages.
 
 The manual rehearsal creates indexes with a known synthetic Ed25519 key, Sigstore bundles, GitHub provenance and an SBOM. It stores CI artifacts only: it never creates a release or accesses production keys. For external artifact checks use `cosign verify-blob` with the exact workflow identity and `gh attestation verify`; rehearsal identity refers to its branch, not a production release.
+
+## Propose a skill
+
+[Contribute a methodology](CONTRIBUTING.md) without Rust: sources, false positives, queries and synthetic episodes. `core/` ships with IRMind; `catalog/` becomes installable only after a maintainer-approved signed release. Start with [the EC2 example](catalog/aws-ec2-cryptomining/SKILL.md).

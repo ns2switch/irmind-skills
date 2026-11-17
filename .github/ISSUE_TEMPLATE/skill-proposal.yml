@@ -1,0 +1,27 @@
+name: Skill proposal
+description: Propose an original methodology with supported sources.
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Investigation use case
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Required sources and whether IRMind can ingest/map them today
+    validations:
+      required: true
+  - type: textarea
+    id: techniques
+    attributes:
+      label: Relevant ATT&CK techniques and confirmation criteria
+    validations:
+      required: true
+  - type: textarea
+    id: authorship
+    attributes:
+      label: Original authorship and MIT OR Apache-2.0 license
+    validations:
+      required: true

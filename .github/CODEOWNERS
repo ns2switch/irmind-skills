@@ -1,0 +1,6 @@
+/catalog/ @ns2switch
+/core/ @ns2switch
+/episodes/ @ns2switch
+/metadata/ @ns2switch
+/tools/ @ns2switch
+/.github/ @ns2switch

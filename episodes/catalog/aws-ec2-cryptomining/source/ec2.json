@@ -1,0 +1,128 @@
+{
+  "Records": [
+    {
+      "eventVersion": "1.10",
+      "eventID": "00000000-0000-4000-8000-000000000001",
+      "eventTime": "2026-01-02T12:00:00Z",
+      "eventName": "CreateAccessKey",
+      "eventSource": "iam.amazonaws.com",
+      "eventType": "AwsApiCall",
+      "awsRegion": "us-east-1",
+      "recipientAccountId": "123456789012",
+      "userIdentity": {
+        "type": "IAMUser",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/synthetic-build",
+        "userName": "synthetic-build",
+        "principalId": "SYNTHETICUSER"
+      },
+      "sourceIPAddress": "203.0.113.77",
+      "userAgent": "synthetic-aws-cli",
+      "requestParameters": {
+        "userName": "synthetic-build"
+      },
+      "responseElements": {
+        "accessKey": {
+          "accessKeyId": "SYNTHETIC-NOT-A-KEY",
+          "userName": "synthetic-build"
+        }
+      }
+    },
+    {
+      "eventVersion": "1.10",
+      "eventID": "00000000-0000-4000-8000-000000000002",
+      "eventTime": "2026-01-02T12:01:00Z",
+      "eventName": "RunInstances",
+      "eventSource": "ec2.amazonaws.com",
+      "eventType": "AwsApiCall",
+      "awsRegion": "eu-west-1",
+      "recipientAccountId": "123456789012",
+      "userIdentity": {
+        "type": "IAMUser",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/synthetic-build",
+        "userName": "synthetic-build",
+        "principalId": "SYNTHETICUSER"
+      },
+      "sourceIPAddress": "203.0.113.77",
+      "userAgent": "synthetic-aws-cli",
+      "requestParameters": {
+        "instanceType": "c5.4xlarge",
+        "minCount": 1,
+        "maxCount": 2,
+        "imageId": "ami-00000000000000001"
+      },
+      "responseElements": {
+        "instancesSet": {
+          "items": [
+            {
+              "instanceId": "i-00000000000000001"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eventVersion": "1.10",
+      "eventID": "00000000-0000-4000-8000-000000000003",
+      "eventTime": "2026-01-02T12:02:00Z",
+      "eventName": "RunInstances",
+      "eventSource": "ec2.amazonaws.com",
+      "eventType": "AwsApiCall",
+      "awsRegion": "ap-southeast-2",
+      "recipientAccountId": "123456789012",
+      "userIdentity": {
+        "type": "IAMUser",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/synthetic-build",
+        "userName": "synthetic-build",
+        "principalId": "SYNTHETICUSER"
+      },
+      "sourceIPAddress": "203.0.113.77",
+      "userAgent": "synthetic-aws-cli",
+      "requestParameters": {
+        "instanceType": "g5.12xlarge",
+        "minCount": 1,
+        "maxCount": 2,
+        "imageId": "ami-00000000000000001"
+      },
+      "responseElements": {
+        "instancesSet": {
+          "items": [
+            {
+              "instanceId": "i-00000000000000002"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eventVersion": "1.10",
+      "eventID": "00000000-0000-4000-8000-000000000004",
+      "eventTime": "2026-01-02T12:03:00Z",
+      "eventName": "RunInstances",
+      "eventSource": "ec2.amazonaws.com",
+      "eventType": "AwsApiCall",
+      "awsRegion": "eu-central-1",
+      "recipientAccountId": "123456789012",
+      "userIdentity": {
+        "type": "IAMUser",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/synthetic-build",
+        "userName": "synthetic-build",
+        "principalId": "SYNTHETICUSER"
+      },
+      "sourceIPAddress": "203.0.113.77",
+      "userAgent": "synthetic-aws-cli",
+      "requestParameters": {
+        "instanceType": "g5.12xlarge",
+        "minCount": 1,
+        "maxCount": 2,
+        "imageId": "ami-00000000000000001"
+      },
+      "responseElements": null,
+      "errorCode": "InstanceLimitExceeded",
+      "errorMessage": "Synthetic regional quota reached"
+    }
+  ]
+}

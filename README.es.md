@@ -43,3 +43,7 @@ La CI fija una etiqueta y un commit de la última release publicada de IRMind, i
 El índice firmado contiene solo `catalog/`. Los paquetes de `core/` llegan con cada release de IRMind y no se instalan con `/skills install catalog:`. Para proponer mejoras al núcleo abre una PR aquí; un script de desarrollo crea una copia local fijada mediante una PR normal de IRMind. El build de IRMind nunca descarga paquetes.
 
 El ensayo manual produce índices con una clave Ed25519 sintética conocida, bundles de Sigstore, procedencia de GitHub y un SBOM. Solo guarda artefactos de CI: no crea releases ni accede a claves de producción. Para verificar externamente un artefacto usa `cosign verify-blob` con la identidad exacta del workflow y `gh attestation verify`; la identidad del ensayo corresponde a su rama, no a una release de producción.
+
+## Proponer una skill
+
+[Contribuye una metodología](CONTRIBUTING.es.md) sin Rust: fuentes, falsos positivos, consultas y episodios sintéticos. `core/` llega con IRMind; `catalog/` solo se instala tras una release firmada aprobada por el mantenedor. Empieza por [el ejemplo EC2](catalog/aws-ec2-cryptomining/SKILL.md).

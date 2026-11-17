@@ -1,66 +1,63 @@
-# Contribuir skills
+# Contribuir una skill forense
 
-Las skills de IRMind son metodologías de datos con licencia MIT OR Apache-2.0.
-Escribe texto propio, cita fuentes públicas y usa evidencia sintética. No incluyas
-datos de incidentes, credenciales, ejecutables, scripts ni instrucciones que
-debiliten la política, custodia, ContentGuard, alcance, aprobaciones o TLS.
+[English](CONTRIBUTING.md) · [Guía de revisión](docs/REVIEWING.es.md)
 
-## Elegir el directorio
+Puedes mejorar una metodología sin escribir Rust. Para una skill nueva se
+recomienda abrir antes una propuesta **Skill proposal**, especialmente si hay
+dudas de cobertura; los cambios pequeños pueden ir directamente a una PR.
 
-| Directorio | Distribución | Cambios |
-| --- | --- | --- |
-| `core/<nombre>/` | Incluido en cada release de IRMind | Mejora aquí una skill del núcleo; una PR normal de sincronización fija el commit en IRMind. |
-| `catalog/<nombre>/` | Instalación opcional admitida por el analista | Añade métodos especializados con nombre distinto. Su distribución independiente llegará tras configurar la clave del publicador. |
+1. Haz un fork y crea `catalog/<nombre>/` a partir de `template/package/`.
+   [aws-ec2-cryptomining](catalog/aws-ec2-cryptomining/SKILL.md) es el ejemplo
+   completo. Usa minúsculas y guiones; los nombres de `core/` están reservados.
+2. Completa el frontmatter: format, name, description, versión SemVer, author,
+   license, target_schema, tools, sources, categories e invocable. Describe los
+   pasos con consultas por categoría, tipo, resultado y rol del esquema común.
+   Incluye fuentes y mapeos, cómo recogerlos, cobertura, técnicas ATT&CK,
+   criterios de confirmación y falsos positivos. Declara las herramientas mínimas.
+3. Añade `metadata/<nombre>.json` con los mismos campos del ejemplo. Las fuentes
+   principales y los mapeos deben existir en la compilación por defecto de la
+   última release publicada de IRMind. La cobertura parcial debe explicarse;
+   una fuente principal no soportada bloquea la contribución.
+4. Añade un episodio pequeño en `episodes/catalog/<nombre>/` con `episode.json`
+   y `source/`. Guarda las respuestas esperadas en `episodes/private/`, fuera
+   del paquete instalable. El modelo scripted consulta evidencia y propone;
+   la confirmación sigue siendo del analista.
+5. Prepara un clon limpio de la última release publicada de IRMind fuera de este
+   repo: el validador superpone allí los fixtures. Con su toolchain de Rust,
+   Python 3.11+ y cargo-nextest, ejecuta:
 
-No dupliques ni renombres paquetes del núcleo en `catalog/`. El constructor del
-índice e IRMind rechazan los nombres que sustituyan al núcleo. Las skills de
-`core/` no son entradas instalables del catálogo. Una firma nunca concede permisos
-ni convierte una metodología en código ejecutable.
+   ```sh
+   git fetch origin main
+   git worktree add --detach ../skills-baseline origin/main
+   python3 -B -m unittest discover -s tests -v
+   python3 -B tools/review.py --root . --baseline ../skills-baseline --irmind ../irmind-release --output review-results.json
+   python3 -B tools/validate.py --irmind ../irmind-release
+   git worktree remove ../skills-baseline
+   ```
 
-## Paquete y episodio
+   El compilador publicado y el motor real son la referencia. Los episodios usan
+   respuestas scripted, sin proveedores ni respuestas esperadas en el contexto.
+6. Abre la PR con su lista de comprobación. Explica cambios, cobertura y herramientas.
+   Todo cambio del paquete aumenta SemVer: patch para correcciones, minor para
+   metodología adicional y major para cambios incompatibles. Los metadatos de
+   build no cuentan como aumento de versión.
 
-Parte de [la plantilla](template/package/SKILL.md). Incluye `SKILL.md` y recursos de texto
-opcionales en `queries/`, `rules/` o `references/`. Respeta el compilador de la
-última release publicada: actualmente 32 KiB por fichero, dieciséis recursos
-adicionales y 128 KiB en total. Declara solo las herramientas necesarias, la
-cobertura real de fuentes y mapeos, falsos positivos y criterios de confirmación.
+## Texto y licencia
 
-Pon el guion en `episodes/<core|catalog>/<nombre>/episode.json` y las fuentes
-sintéticas públicas en su directorio `source/`. Las respuestas esperadas van en
-`episodes/private/`, nunca en el paquete ni en las fuentes. El guion contiene
-llamadas locales literales y referencias a índices de fuente; no contiene código.
-El evaluador abre las respuestas privadas después de terminar el modelo.
-Cada episodio recupera evidencia real de sus fuentes, carga la skill, propone
-hallazgos sin confirmar, los confirma como analista sintético, verifica, sella y
-verifica de manera independiente la exportación.
+Texto propio con licencia **MIT OR Apache-2.0**. Puedes citar documentación pública
+sin copiar material protegido. Solo datos sintéticos: nada de incidentes reales,
+secretos, datos personales, ejecutables o scripts. No se permiten instrucciones
+para ignorar política, pedir aprobaciones, ampliar alcance o atribuir autoridad
+a la skill. Los recursos son datos y pasan por ContentGuard y los controles normales.
 
-Cada entrada del catálogo lleva `metadata/<nombre>.json` con
-`minimum_irmind_version`, `mappings` y `coverage` (`status` y `description`
-acotada). Esta información queda fuera del paquete instalable. La versión,
-esquema y fuentes coinciden con el paquete; un mapeo ausente no es cobertura total.
+## Núcleo y catálogo
 
-Actualiza los compromisos con `python3 tools/inventory.py --write`; compruébalos
-con `python3 tools/inventory.py` y `python3 -m unittest discover -s tests -v`.
-Los cambios de fixtures del núcleo actualizan también el espejo explícito. El
-espejo nunca acepta código del compilador o del motor. La CI fija la etiqueta y
-el commit de la última release publicada, usa su compilador y motor sin cambios
-y ejecuta episodios locales guionizados sin credenciales de proveedores. Estas
-pruebas validan integración y controles, no precisión forense en incidentes reales.
+Las mejoras de `core/` llegan con una PR de sincronización y una release de IRMind.
+Actualiza sus inventarios con `tools/inventory.py --write`. Sus nombres no se
+publican en el índice del catálogo y no pueden sustituirse desde él.
 
-## Confianza y publicación
-
-No hay descargas ni actualizaciones automáticas. Instalar o actualizar exige
-verificar el índice del publicador, revisar el contenido y firmar la admisión por
-separado. La skill sigue siendo contenido no confiable y nunca entra en system.
-La firma del catálogo y la admisión del analista son garantías diferentes.
-
-La publicación de producción está desactivada. El ensayo manual usa una clave
-Ed25519 sintética conocida, Sigstore y attestations de GitHub; solo sube artefactos
-de CI. Nunca compiles esa clave en IRMind ni la uses en producción. El mantenedor
-genera y configura la clave real por separado.
-
-Antes de 1.0, una versión menor puede cambiar formatos sin migración. Adapta las
-pruebas al último compilador publicado; no añadas intérpretes históricos ni
-reescribas silenciosamente un paquete admitido.
-
-[English](CONTRIBUTING.md)
+Las skills de `catalog/` se instalan de forma independiente. Estar en main **no
+significa estar publicada**: el mantenedor prepara lotes revisados sin un calendario
+fijo y aprueba una release firmada. Después, el analista ejecuta explícitamente
+`/skills install catalog:<nombre>`, revisa el contenido y firma la admisión.
+No hay descargas ni actualizaciones automáticas.
