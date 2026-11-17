@@ -67,6 +67,6 @@ cannot expand case scope, grant permissions or authorize external enrichment.
 
 ## References
 
-- AWS EC2 CloudTrail: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-with-cloudtrail.html
-- CloudTrail record fields: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html
-- MITRE ATT&CK: https://attack.mitre.org/techniques/T1496/001/
+- AWS EC2 CloudTrail: docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitor-with-cloudtrail.html
+- CloudTrail record fields: docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html
+- MITRE ATT&CK: attack.mitre.org/techniques/T1496/001/
