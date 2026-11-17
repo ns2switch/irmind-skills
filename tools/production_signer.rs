@@ -3,6 +3,7 @@
 use anyhow::{Context as _, Result, ensure};
 use ed25519_dalek::{Signer as _, SigningKey};
 use std::path::PathBuf;
+use secrecy::{ExposeSecret as _, SecretString};
 
 struct CatalogSigner(SigningKey);
 impl irmind_app::Signer for CatalogSigner {
@@ -18,10 +19,11 @@ impl irmind_app::Signer for CatalogSigner {
 }
 
 fn sign_index() -> Result<()> {
-    let encoded = std::env::var("CATALOG_ED25519_SEED_HEX").map_err(|_| anyhow::anyhow!("signing secret unavailable"))?;
-    ensure!(encoded.len() == 64 && encoded.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)), "invalid signing secret");
+    let encoded = SecretString::from(std::env::var("CATALOG_ED25519_SEED_HEX").map_err(|_| anyhow::anyhow!("signing secret unavailable"))?);
+    let text = encoded.expose_secret();
+    ensure!(text.len() == 64 && text.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)), "invalid signing secret");
     let mut seed = [0_u8; 32];
-    for (slot, pair) in seed.iter_mut().zip(encoded.as_bytes().chunks_exact(2)) {
+    for (slot, pair) in seed.iter_mut().zip(text.as_bytes().chunks_exact(2)) {
         fn nibble(byte: u8) -> u8 { if byte <= b'9' { byte - b'0' } else { byte - b'a' + 10 } }
         *slot = (nibble(pair[0]) << 4) | nibble(pair[1]);
     }
@@ -56,7 +58,7 @@ fn sign_index() -> Result<()> {
         index["release_tag"].as_str().context("tag required")?,
     )?;
     let signature_checker =
-        irmind_infra::LocalVerifier::from_signer(&CatalogSigner(signing.clone()));
+        irmind_infra::LocalVerifier::from_signer(&CatalogSigner(signing));
     let verified = irmind_app::catalog::VerifiedCatalogIndex::authenticate(
         &raw,
         &expected,

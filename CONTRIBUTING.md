@@ -65,3 +65,5 @@ publishes a signed catalog release in reviewed batches when ready; there is no
 fixed publication schedule. After publication, an analyst explicitly runs
 `/skills install catalog:<name>`, previews the package and signs admission.
 No background download or update occurs.
+
+For a working reference/coverage layout, see [the EC2 example notes](docs/ec2-example.md). Keep clickable web references outside installable resources; the existing ContentGuard admission checks remain authoritative even when a reviewer heuristic is only a warning.
