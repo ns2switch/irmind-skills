@@ -79,3 +79,5 @@ For a correction, increase the package version and describe the correction in
 That description is included in the signed index. A full withdrawal removes the
 entry from the next higher-sequence index; explain it in the release notes. Do
 not add an unsigned instruction or invent unsupported index fields.
+
+CI also compiles the production signing adapter and checks that it fails closed in an empty credential environment. That check never requests a production secret.

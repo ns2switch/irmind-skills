@@ -73,3 +73,5 @@ de cobertura de `metadata/<nombre>.json`, dentro del límite de 512 bytes existe
 Esa descripción queda firmada en el índice. La retirada completa elimina la entrada
 del siguiente índice de secuencia mayor y se explica en las notas. No añadas
 instrucciones sin firma ni campos que el formato del índice no soporte.
+
+La CI también compila el adaptador de firma de producción y comprueba que falla de forma cerrada sin credenciales. Esta prueba nunca solicita un secreto de producción.

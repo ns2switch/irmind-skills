@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -110,6 +111,20 @@ def validate(repository, irmind):
         shutil.copytree(repository / 'template/private', sample / 'episodes/private')
         compile_package(compiler, sample / 'catalog' / name)
         run([target / 'catalog_episode', sample, 'catalog', name], irmind)
+    # Compile the publisher adapter without a credential. Even local validation
+    # launches its absence check with a fresh environment containing only PATH.
+    signer_source = repository / 'tools/production_signer.rs'
+    if signer_source.is_file():
+        signer_adapter = irmind / 'crates/bin/examples/catalog_sign.rs'
+        if signer_adapter.exists() and signer_adapter.read_bytes() != signer_source.read_bytes():
+            raise ValueError('release contains a different signing adapter; use a clean checkout')
+        copy_exact(signer_source, signer_adapter)
+        run(['cargo', 'build', '-p', 'irmind', '--example', 'catalog_sign',
+             '--all-features', '--profile', 'ci', '--locked'], irmind)
+        absent = subprocess.run([str(target / 'catalog_sign')], env={'PATH': os.environ['PATH']},
+                                capture_output=True, text=True, timeout=15)
+        if absent.returncode != 1 or absent.stdout or absent.stderr != 'Catalog signing failed; no release should be published.\n':
+            raise ValueError('signer must fail closed without its protected runtime secret')
     # Existing release tests also retain the detailed HuntEval and hostile-evidence checks.
     run(['cargo', 'nextest', 'run', '-p', 'irmind', '--test', 'skills_runtime',
          '--all-features', '--cargo-profile', 'ci', '--locked', '--test-threads', '4',
