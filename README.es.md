@@ -47,3 +47,25 @@ El ensayo manual produce índices con una clave Ed25519 sintética conocida, bun
 ## Proponer una skill
 
 [Contribuye una metodología](CONTRIBUTING.es.md) sin Rust: fuentes, falsos positivos, consultas y episodios sintéticos. `core/` llega con IRMind; `catalog/` solo se instala tras una release firmada aprobada por el mantenedor. Empieza por [el ejemplo EC2](catalog/aws-ec2-cryptomining/SKILL.md).
+
+## Verificar una release del catálogo
+
+Necesitas OpenSSL 3, cosign 3.1.3+ y una versión actual de GitHub CLI. Descarga
+los assets del tag exacto y verifica de forma independiente Ed25519, hashes,
+SHA256SUMS, identidad Sigstore y procedencia:
+
+```sh
+gh release download v0.1.0 -R ns2switch/irmind-skills -D verified-catalog
+python3 -B tools/verify_release.py --directory verified-catalog
+```
+
+El key_id de producción es
+`f04daae3f8243ed76452d5f787ea527c8fbec895ca0c91a35f453f6677575e4f`.
+La identidad Sigstore exacta es
+`https://github.com/ns2switch/irmind-skills/.github/workflows/release.yml@refs/tags/v0.1.0`,
+con emisor `https://token.actions.githubusercontent.com`. IRMind v0.5.4 lleva la
+clave pública Ed25519 compilada y no necesita cosign en ejecución. Instala de forma
+explícita con `/skills install catalog:aws-ec2-cryptomining`, revisa cobertura y
+herramientas y firma la admisión. Los nombres del núcleo no se sustituyen.
+La [guía de revisión](docs/REVIEWING.es.md) explica publicación y retirada.
+Los ensayos sintéticos nunca usan la semilla de producción.
