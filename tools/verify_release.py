@@ -35,7 +35,7 @@ def verify(directory,ed25519_only=False):
    if not m or m[2] in seen or m[2] in ('.','..'):raise ValueError('invalid checksum manifest')
    seen.add(m[2]);p=directory/m[2]
    if hashlib.sha256(p.read_bytes()).hexdigest()!=m[1]:raise ValueError('payload checksum mismatch')
-  required={'index.json','index.ed25519','skills-SBOM.spdx.json'}|{e['asset'] for e in entries}
+  required={'index.json','index.ed25519','skills-SBOM.cdx.json'}|{e['asset'] for e in entries}
   if not required<=seen:raise ValueError('missing payload checksums')
   identity=f'https://github.com/{REPO}/.github/workflows/release.yml@refs/tags/{index["release_tag"]}'
   for name in sorted(seen|{'SHA256SUMS'}):
