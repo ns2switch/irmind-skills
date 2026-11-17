@@ -47,3 +47,24 @@ The manual rehearsal creates indexes with a known synthetic Ed25519 key, Sigstor
 ## Propose a skill
 
 [Contribute a methodology](CONTRIBUTING.md) without Rust: sources, false positives, queries and synthetic episodes. `core/` ships with IRMind; `catalog/` becomes installable only after a maintainer-approved signed release. Start with [the EC2 example](catalog/aws-ec2-cryptomining/SKILL.md).
+
+## Verify a published catalog
+
+Requires OpenSSL 3, cosign 3.1.3+ and a current GitHub CLI. Download the exact
+release's assets, then verify the Ed25519 index, package hashes, checksum manifest,
+Sigstore workflow/tag identity and provenance independently:
+
+```sh
+gh release download v0.1.0 -R ns2switch/irmind-skills -D verified-catalog
+python3 -B tools/verify_release.py --directory verified-catalog
+```
+
+The production key ID is
+`f04daae3f8243ed76452d5f787ea527c8fbec895ca0c91a35f453f6677575e4f`.
+The exact Sigstore identity is
+`https://github.com/ns2switch/irmind-skills/.github/workflows/release.yml@refs/tags/v0.1.0`,
+issuer `https://token.actions.githubusercontent.com`. IRMind v0.5.4 compiles the
+Ed25519 public key; it does not require cosign at runtime. Installation is explicit:
+`/skills install catalog:aws-ec2-cryptomining`. Inspect coverage and tools before
+signing admission. Core names cannot be overridden. [Release review](docs/REVIEWING.md)
+explains publication and withdrawal. Synthetic rehearsals never use the production seed.

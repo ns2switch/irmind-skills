@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a canonical rehearsal index from catalog/ only; never publish a release."""
+"""Build a bounded canonical catalog-only index; publishing is a separate operation."""
 import argparse
 import hashlib
 import json
@@ -10,7 +10,9 @@ import subprocess
 from package_contract import canonical, compile_package, packages, resources
 
 
-def build(repository, compiler, output, key_id, tag, commit):
+def build(repository, compiler, output, key_id, tag, commit, sequence=1):
+    if not isinstance(sequence, int) or not 1 <= sequence <= 2**64-1:
+        raise ValueError("invalid release sequence")
     if not re.fullmatch('[0-9a-f]{64}', key_id) or not re.fullmatch('[0-9a-f]{40}', commit):
         raise ValueError('invalid public key or commit identity')
     if not re.fullmatch(r'v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[a-z0-9.-]+)?', tag):
@@ -49,7 +51,7 @@ def build(repository, compiler, output, key_id, tag, commit):
             'coverage': {'status': extra['coverage']['status'], 'description': extra['coverage']['description']},
         })
     index = canonical({'format_version': 1, 'catalog': 'ns2switch/irmind-skills', 'key_id': key_id,
-                       'release_tag': tag, 'release_commit': commit, 'release_sequence': 1,
+                       'release_tag': tag, 'release_commit': commit, 'release_sequence': sequence,
                        'entries': entries})
     if len(index) > 1024 * 1024 or len(entries) > 1024:
         raise ValueError('index exceeds limits')
@@ -64,7 +66,8 @@ if __name__ == '__main__':
     parser.add_argument('--key-id', required=True)
     parser.add_argument('--tag', default='v0.0.0-rehearsal')
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--sequence', type=int, default=1)
     args = parser.parse_args()
     index = build(Path(__file__).resolve().parents[1], args.compiler.resolve(), args.output.resolve(),
-                  args.key_id, args.tag, args.commit)
+                  args.key_id, args.tag, args.commit, args.sequence)
     print(f'Built catalog-only index with {len(json.loads(index)["entries"])} entries.')

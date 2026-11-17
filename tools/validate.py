@@ -92,8 +92,8 @@ def validate(repository, irmind):
             compiled.append({'family': family, 'name': meta['name'], 'sha256': digest})
     overlay(repository, irmind)
     adapter = irmind / 'crates/bin/examples/catalog_episode.rs'
-    if adapter.exists():
-        raise ValueError('release already contains a catalog adapter; review tool compatibility')
+    if adapter.exists() and adapter.read_bytes() != (repository / 'tools/episode_harness.rs').read_bytes():
+        raise ValueError('release contains a different catalog adapter; review tool compatibility')
     copy_exact(repository / 'tools/episode_harness.rs', adapter)
     run(['cargo', 'build', '-p', 'irmind', '--example', 'catalog_episode',
          '--all-features', '--profile', 'ci', '--locked'], irmind)
