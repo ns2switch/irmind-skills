@@ -110,5 +110,32 @@ fn published_binary_installs_catalog_and_completes_signed_synthetic_case(){
  let exported=home.path().join("published-catalog.irmind");cli(home.path(),&["export",&id,exported.to_str().unwrap(),"--include-originals","--source-root",source.parent().unwrap().to_str().unwrap()]);
  let expected_key={let backend=FileKeystore::open(home.path(),&SecretString::from(PHRASE.to_owned()),false).unwrap();irmind_app::hex(&irmind_app::sha256(&backend.load(Actor::Analyst).unwrap().public_key()))};
  cli(home.path(),&["verify-export",exported.to_str().unwrap(),"--expected-key",&expected_key]);
- eprintln!("Published binary: catalog preview, signed admission, scripted local investigation, analyst confirmation, verification, seal and export passed.");
+ eprintln!("Published binary: {} preview, signed admission, scripted local investigation, analyst confirmation, verification, seal and export passed.", if std::env::var_os("IRMIND_CATALOG_LOCAL_REHEARSAL").is_some(){"local-package preflight"}else{"catalog"});
+}
+
+#[test]
+fn published_binary_rejects_changed_index_and_another_signing_key_without_admission(){
+ let Some(download)=std::env::var_os("IRMIND_CATALOG_RELEASE_DIR") else {
+  assert!(std::env::var_os("IRMIND_CATALOG_LOCAL_REHEARSAL").is_some(),"verified catalog directory required");
+  eprintln!("Local rehearsal only: production signed-index checks require downloaded catalog assets.");return;
+ };
+ let download=PathBuf::from(download);let tag=std::env::var("IRMIND_CATALOG_TAG").unwrap();
+ let raw=std::fs::read(download.join("index.json")).unwrap();
+ let index:serde_json::Value=serde_json::from_slice(&raw).unwrap();
+ for wrong_key in [false,true] {
+  let home=tempfile::tempdir().unwrap();seed(home.path());let bad=tempfile::tempdir().unwrap();
+  std::fs::copy(download.join("index.json"),bad.path().join("index.json")).unwrap();
+  std::fs::copy(download.join("index.ed25519"),bad.path().join("index.ed25519")).unwrap();
+  for entry in index["entries"].as_array().unwrap(){let name=entry["asset"].as_str().unwrap();assert!(name.bytes().all(|b|b.is_ascii_alphanumeric() || b"._-".contains(&b)));std::fs::copy(download.join(name),bad.path().join(name)).unwrap();}
+  if wrong_key {
+   use ed25519_dalek::Signer as _;
+   let mut preimage=b"irmind-skill-catalog-index-v1\0".to_vec();preimage.extend_from_slice(&(raw.len() as u64).to_be_bytes());preimage.extend_from_slice(&raw);
+   let signature=ed25519_dalek::SigningKey::from_bytes(&[90;32]).sign(&preimage);
+   std::fs::write(bad.path().join("index.ed25519"),signature.to_bytes()).unwrap();
+  } else {let mut changed=raw.clone();changed.push(b' ');std::fs::write(bad.path().join("index.json"),changed).unwrap();}
+  let mut session=demo_session::DemoSession::spawn_sized(&command(home.path()),120,40).unwrap();session.expect("Unlock").unwrap();session.send(format!("{PHRASE}\r")).unwrap();session.expect("Fingerprint").unwrap();session.send("\r").unwrap();session.expect("Find cases or type").unwrap();
+  session.send("/skills\r").unwrap();session.expect("Install/update").unwrap();session.send("2\r").unwrap();session.expect("3. Offline catalog").unwrap();session.send("3\r").unwrap();session.expect("Downloaded catalog folder").unwrap();
+  session.send(format!("{}\t{NAME}\t{tag}\r",bad.path().display())).unwrap();session.expect("catalog signature is invalid").unwrap();session.expect_screen("2. Sign and apply",false).unwrap();session.send("\x03").unwrap();session.expect("Exit IRMind?").unwrap();session.send("\r").unwrap();session.expect_exit().unwrap();drop(session);
+  let store=current_sources::open(home.path());assert!(!store.global_operations().unwrap().iter().any(|op|op.operation.starts_with("skill-installation-v2:")));
+ }
 }
