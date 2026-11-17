@@ -2,3 +2,6 @@
 /dist/
 /validation-results.json
 __pycache__/
+
+/baseline/
+/review-results.json

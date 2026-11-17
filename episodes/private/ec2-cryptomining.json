@@ -1,0 +1,9 @@
+{
+  "private_marker": "EC2_EVALUATOR_ONLY_DO_NOT_INGEST",
+  "episodes": {
+    "aws-ec2-cryptomining": {
+      "conclusion": "Recorded new access key, cross-region EC2 provisioning and a rejected quota-limited request; actual mining remains unproven",
+      "technique": "T1098.001"
+    }
+  }
+}

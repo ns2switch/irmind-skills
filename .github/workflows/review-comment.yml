@@ -1,0 +1,25 @@
+name: Summarize skill review
+on:
+  workflow_run:
+    workflows: [Validate skill packages and synthetic episodes]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Report data only, without checking out or executing PR content
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -B tools/comment_review.py

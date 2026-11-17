@@ -1,0 +1,10 @@
+{
+  "minimum_irmind_version": "0.5.3",
+  "mappings": [
+    "mapping-cloudtrail"
+  ],
+  "coverage": {
+    "status": "partial",
+    "description": "CloudTrail management-event triage is supported; proving mining requires workload, network or billing evidence not supplied by this episode."
+  }
+}

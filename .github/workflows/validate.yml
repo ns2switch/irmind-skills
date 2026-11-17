@@ -53,6 +53,23 @@ jobs:
         run: |
           python3 -B tools/inventory.py
           python3 -B -m unittest discover -s tests -v
+      - name: Fetch the immutable baseline for content-version checks
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          baseline=${BASE_SHA:-$GITHUB_SHA}
+          if [[ "$baseline" =~ ^0+$ ]]; then baseline="$GITHUB_SHA"; fi
+          git fetch --no-tags origin "$baseline"
+          git worktree add --detach baseline "$baseline"
+      - name: Check supported sources, versions and human-review notices
+        run: python3 -B tools/review.py --root . --baseline baseline --irmind irmind --output review-results.json
+      - name: Preserve bounded data for the trusted PR reporter
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: skill-review-summary
+          path: review-results.json
+          if-no-files-found: ignore
       - name: Use the released compiler and engine for every package episode
         run: python3 -B tools/validate.py --irmind irmind
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

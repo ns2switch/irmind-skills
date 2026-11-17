@@ -1,0 +1,21 @@
+name: Problem in a skill
+description: Report a methodology or coverage problem using synthetic data.
+body:
+  - type: textarea
+    id: skill
+    attributes:
+      label: Skill name and version
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What fails and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Small synthetic example; never include incident data or secrets
+    validations:
+      required: true

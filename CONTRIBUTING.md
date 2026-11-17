@@ -1,66 +1,67 @@
-# Contributing skills
+# Contributing a forensic skill
 
-IRMind skills are data-only forensic methods licensed under MIT OR Apache-2.0.
-Write original prose, cite public methodology sources and use synthetic evidence.
-Do not submit incident data, credentials, executable code, scripts or instructions
-that weaken policy, custody, ContentGuard, scope, approvals or TLS verification.
+[Español](CONTRIBUTING.es.md) · [Reviewer guide](docs/REVIEWING.md)
 
-## Choose the correct tree
+You can improve an investigation methodology without writing Rust. For a new
+method, optionally open a **Skill proposal** issue first, especially when coverage
+is uncertain. Small fixes can go directly to a pull request.
 
-| Tree | Delivery | Changes |
-| --- | --- | --- |
-| `core/<name>/` | Compiled into an IRMind release | Improve an existing core method here; a normal IRMind synchronization PR pins the accepted commit. |
-| `catalog/<name>/` | Optional analyst-admitted installation | Add specialized community methods with a distinct name. These packages may be distributed independently after publisher-key provisioning. |
+1. Fork this repository and create `catalog/<name>/` from `template/package/`.
+   Start with [aws-ec2-cryptomining](catalog/aws-ec2-cryptomining/SKILL.md) as a
+   complete example. Core names are reserved; use lowercase hyphenated names.
+2. Fill every frontmatter field: format, name, description, SemVer version,
+   author, license, target_schema, tools, sources, categories and invocable.
+   Write a step-by-step method using the common event schema's category, type,
+   outcome and role filters. State required sources/mappings, how to collect
+   them, coverage gaps, ATT&CK candidates, confirmation criteria and false positives.
+   Declare only the tools actually needed. Skills never confer permissions.
+3. Add `metadata/<name>.json` using the example's exact fields. Sources and
+   mappings must exist in the default build of the latest published IRMind.
+   Partial analytical coverage is allowed when clearly described; an unavailable
+   primary source is not. Add data-only query/reference files if helpful.
+4. Put a small synthetic episode under `episodes/catalog/<name>/`, following
+   the example's `episode.json` and `source/`. Put expected answers under
+   `episodes/private/`, outside the installable package. The scripted model must
+   query evidence, propose findings and leave confirmation to the analyst.
+5. Obtain a clean checkout of the latest **published** IRMind release outside
+   this repository (the tools overlay fixtures there). With its Rust toolchain,
+   Python 3.11+ and cargo-nextest installed, run:
 
-Never duplicate or rename a core package into `catalog/`. The index builder and
-IRMind independently reject catalog packages whose names shadow the core.
-Core packages are not installable catalog entries. A method is never executable
-and never extends permissions, even when signed.
+   ```sh
+   git fetch origin main
+   git worktree add --detach ../skills-baseline origin/main
+   python3 -B -m unittest discover -s tests -v
+   python3 -B tools/review.py --root . --baseline ../skills-baseline --irmind ../irmind-release --output review-results.json
+   python3 -B tools/validate.py --irmind ../irmind-release
+   git worktree remove ../skills-baseline
+   ```
 
-## Package and episode
+   The released compiler and real engine are authoritative. Episodes run locally
+   with scripted responses, no provider calls and no expected answers in context.
+6. Open a PR with the checklist. Explain coverage, methodology changes and why
+   each tool is needed. Any package content change must increase its SemVer:
+   patch for a correction, minor for added methodology, major for incompatible
+   scope/interpretation. Build metadata alone is not a version increase.
 
-Start from [the template](template/package/SKILL.md). A package has `SKILL.md` and optional
-`queries/`, `rules/` or `references/` text resources. Use the format and limits of
-the latest published IRMind compiler: currently 32 KiB per file, at most sixteen
-companion resources and 128 KiB overall. Declare only needed tools and honest
-source/mapping coverage; describe false positives and confirmation criteria.
+## Content and license
 
-Put the scripted scenario at `episodes/<core|catalog>/<name>/episode.json` and
-synthetic public input under its `source/` directory. Put expected answers under
-`episodes/private/`; never put them in the package or source tree. The public
-script contains literal local tool proposals and source-index placeholders, not
-code. The independent evaluator opens private answers after the model completes.
-Each episode must retrieve actual source evidence, load the method, propose
-unconfirmed findings, confirm them as the synthetic analyst, verify custody,
-seal and independently verify the export.
+Write original text, under **MIT OR Apache-2.0**. Cite public ATT&CK or vendor
+documentation; do not copy copyrighted posters or guides. Use synthetic data
+only: no real incident records, secrets, personal information, executables or
+scripts. Do not tell a model to ignore policy, request approvals, broaden scope
+or treat a skill as authority. Optional resources are data, never executable.
+The package remains subject to ContentGuard, case scope and normal approvals.
 
-For catalog entries, add `metadata/<name>.json` with `minimum_irmind_version`,
-`mappings` and `coverage` (`status` and a bounded `description`). This metadata is
-outside the installable package. Use the version, target schema and declared
-source modules from the package; do not claim unsupported mappings as complete.
+## Core versus catalog
 
-Refresh core commitments with `python3 tools/inventory.py --write`, then run
-`python3 tools/inventory.py` and `python3 -m unittest discover -s tests -v`.
-Core fixture changes also update the explicit source mirror; compiler or engine
-code is never accepted in that mirror. CI freezes the latest published IRMind
-tag and commit, uses its unchanged compiler and engine, and runs local scripted
-episodes without provider credentials. These tests validate integration and
-controls, not forensic accuracy with a real model or real incident.
+`core/` is the source of the skills bundled in IRMind. Propose improvements here;
+they arrive through a reviewed sync PR and a subsequent IRMind release. Keep
+`core/package-identities.json` and `source-map.json` current using `tools/inventory.py --write`.
+Core package names never appear in the signed catalog and cannot be overridden.
 
-## Trust and publishing
-
-No download or update is automatic. Installing or updating a catalog skill
-requires publisher-index verification, preview and a separate Analyst signature.
-An installed skill remains untrusted content and never enters the system role.
-Catalog signatures and analyst admission are different guarantees.
-
-Production publication is disabled. The manual release rehearsal uses a known
-synthetic Ed25519 key, Sigstore and GitHub attestations, and uploads CI artifacts
-only. Never compile its key into IRMind and never use it for a production index.
-Production-key generation and provisioning remain maintainer operations.
-
-Pre-1.0 minor IRMind releases may change package formats without migration.
-Keep tests compatible with the latest released compiler; do not add historical
-interpreters or silently rewrite an admitted package.
-
-[Español](CONTRIBUTING.es.md)
+`catalog/` contains independently installable community skills. Merge makes a
+method available for review on main, **not yet installable**. The maintainer
+publishes a signed catalog release in reviewed batches when ready; there is no
+fixed publication schedule. After publication, an analyst explicitly runs
+`/skills install catalog:<name>`, previews the package and signs admission.
+No background download or update occurs.
