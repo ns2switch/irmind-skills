@@ -1,0 +1,19 @@
+name: Check catalog release protection (read only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with: {persist-credentials: false}
+      - name: Read protection metadata without requesting a deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -B tools/check_release_protection.py

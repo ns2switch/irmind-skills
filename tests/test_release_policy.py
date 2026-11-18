@@ -11,6 +11,11 @@ class ReleasePolicyTests(unittest.TestCase):
    with self.assertRaises(ValueError):validate_environment(bad,tags)
   for rules in ([],[{'type':'branch','name':'main'}],[{'type':'tag','name':'*'}]):
    with self.assertRaises(ValueError):validate_environment(good,{'branch_policies':rules})
+ def test_readonly_protection_check_cannot_request_a_deployment_or_signing_secret(self):
+  s=(ROOT/'.github/workflows/check-release-protection.yml').read_text()
+  self.assertNotIn('environment:',s);self.assertNotIn('secrets.',s)
+  self.assertNotIn('contents: write',s);self.assertNotIn('id-token: write',s)
+  self.assertIn('actions: read',s)
  def test_seed_is_scoped_to_one_protected_signer_step(self):
   s=(ROOT/'.github/workflows/release.yml').read_text()
   self.assertEqual(s.count('secrets.CATALOG_ED25519_SEED_HEX'),1)
