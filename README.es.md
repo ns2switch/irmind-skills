@@ -8,7 +8,7 @@ Repositorio fuente de las skills forenses de datos de [IRMind](https://github.co
 
 Una skill no concede permisos. Siguen mandando la política, el alcance del caso, el techo de la organización, ContentGuard y las aprobaciones del analista. Los paquetes no contienen código ejecutable.
 
-No se publican releases de producción del catálogo hasta disponer de su clave de firma. Los ensayos usan solo claves sintéticas.
+Las releases de producción requieren el environment release protegido y aprobación del mantenedor. IRMind v0.5.4 incorpora la clave pública. Los ensayos usan solo claves sintéticas.
 
 [English](README.md)
 
@@ -16,7 +16,7 @@ Licencia MIT OR Apache-2.0.
 
 ## Paquetes y validación
 
-Hay **15 paquetes del núcleo** y **0 entradas instalables del catálogo**. Los compromisos originales de v0.5.0 están en [el inventario](core/package-identities.json) y [la referencia inicial](core/baseline.json).
+Hay **15 paquetes del núcleo** y **1 ejemplo comunitario en catalog/**. Una entrada solo se instala tras su release firmada. Los compromisos originales de v0.5.0 están en [el inventario](core/package-identities.json) y [la referencia inicial](core/baseline.json).
 
 | Skill | Fuentes declaradas |
 | --- | --- |
@@ -38,7 +38,7 @@ Hay **15 paquetes del núcleo** y **0 entradas instalables del catálogo**. Los 
 
 [Contribuir](CONTRIBUTING.es.md) · [Plantilla del paquete](template/package/SKILL.md) · [Ejemplo de episodio](template/episode/episode.json)
 
-La CI fija una etiqueta y un commit de la última release publicada de IRMind, incluido su estado preliminar. Usa su compilador real, límites, política, guard y motor; ejecuta los 15 episodios y las pruebas existentes de contenido malicioso, verifica, sella y exporta. No necesita claves de proveedores. Las respuestas privadas están en `episodes/private/` y solo se abren después del modelo.
+La CI fija una etiqueta y un commit de la última release publicada de IRMind, incluido su estado preliminar. Usa su compilador real, límites, política, guard y motor; ejecuta todos los episodios del núcleo y del catálogo y las pruebas existentes de contenido malicioso, verifica, sella y exporta. No necesita claves de proveedores. Las respuestas privadas están en `episodes/private/` y solo se abren después del modelo.
 
 El índice firmado contiene solo `catalog/`. Los paquetes de `core/` llegan con cada release de IRMind y no se instalan con `/skills install catalog:`. Para proponer mejoras al núcleo abre una PR aquí; un script de desarrollo crea una copia local fijada mediante una PR normal de IRMind. El build de IRMind nunca descarga paquetes.
 

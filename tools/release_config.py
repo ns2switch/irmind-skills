@@ -13,8 +13,8 @@ def validate_environment(environment, policies):
   raise ValueError('release permits only v* tags')
 
 def main():
- environment=json.loads(subprocess.check_output(['gh','api','repos/ns2switch/irmind-skills/environments/release']))
- policies=json.loads(subprocess.check_output(['gh','api','repos/ns2switch/irmind-skills/environments/release/deployment-branch-policies']))
+ environment=json.loads(subprocess.check_output(['gh','api','-H','X-GitHub-Api-Version: 2026-03-10','repos/ns2switch/irmind-skills/environments/release']))
+ policies=json.loads(subprocess.check_output(['gh','api','-H','X-GitHub-Api-Version: 2026-03-10','repos/ns2switch/irmind-skills/environments/release/deployment-branch-policies']))
  validate_environment(environment,policies)
  c=json.loads(Path('catalog-release.json').read_text())
  if set(c)!=CONFIG or c['format_version']!=1 or not isinstance(c['release_sequence'],int) or not 1<=c['release_sequence']<=2**64-1:raise ValueError('invalid configuration')

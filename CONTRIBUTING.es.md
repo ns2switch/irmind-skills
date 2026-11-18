@@ -61,3 +61,5 @@ significa estar publicada**: el mantenedor prepara lotes revisados sin un calend
 fijo y aprueba una release firmada. Después, el analista ejecuta explícitamente
 `/skills install catalog:<nombre>`, revisa el contenido y firma la admisión.
 No hay descargas ni actualizaciones automáticas.
+
+La [guía del ejemplo EC2](docs/ec2-example.es.md) muestra cómo organizar referencias y cobertura. Conserva los enlaces web completos fuera del paquete: ContentGuard sigue siendo obligatorio aunque una heurística de revisión solo produzca un aviso.

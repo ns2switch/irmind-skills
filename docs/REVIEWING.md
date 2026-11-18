@@ -59,3 +59,25 @@ For a reported security problem, keep any sensitive report private, fix it with
 neutral technical wording and publish the correction promptly under IRMind's
 pre-1.0 policy. Do not publish incident data or secrets. The maintainer decides
 whether to withdraw the method, publish a corrected version or rotate the key.
+
+## Record the release checks
+
+After publication, launch the native workflow against exact tags:
+
+```sh
+gh workflow run verify-published.yml -R ns2switch/irmind-skills --ref main -f irmind_tag=v0.5.4 -f catalog_tag=v0.1.0
+```
+
+It installs the signed IRMind release, verifies the catalog independently and
+exercises the published executable on Linux, macOS and Windows. Changed-index and
+wrong-key failures must leave no signed admission. The signed synthetic history
+contract also checks rollback rejection without the separate analyst confirmation;
+the first production release has no earlier production index to replay.
+
+For a correction, increase the package version and describe the correction in
+`metadata/<name>.json`'s coverage description, within its existing 512-byte bound.
+That description is included in the signed index. A full withdrawal removes the
+entry from the next higher-sequence index; explain it in the release notes. Do
+not add an unsigned instruction or invent unsupported index fields.
+
+CI also compiles the production signing adapter and checks that it fails closed in an empty credential environment. That check never requests a production secret.

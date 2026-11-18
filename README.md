@@ -8,7 +8,7 @@ Source repository for the data-only forensic skills used by [IRMind](https://git
 
 A skill grants no permissions. Tool policy, case scope, organization limits, ContentGuard and analyst approvals remain authoritative. Packages contain no executable code.
 
-Catalog production releases are not published until its production signing key is provisioned. Rehearsals use synthetic keys only.
+Production catalog releases require the protected release environment and maintainer approval. The production public key is pinned by IRMind v0.5.4. Rehearsals use synthetic keys only.
 
 [Español](README.es.md)
 
@@ -16,7 +16,7 @@ Licensed under MIT OR Apache-2.0.
 
 ## Packages and validation
 
-There are **15 core packages** and **0 installable catalog entries**. The original v0.5.0 commitments are in the [inventory](core/package-identities.json) and [initial baseline](core/baseline.json).
+There are **15 core packages** and **1 community example in catalog/**. A catalog entry becomes installable only after its signed release. The original v0.5.0 commitments are in the [inventory](core/package-identities.json) and [initial baseline](core/baseline.json).
 
 | Skill | Declared sources |
 | --- | --- |
@@ -38,7 +38,7 @@ There are **15 core packages** and **0 installable catalog entries**. The origin
 
 [Contributing](CONTRIBUTING.md) · [Package template](template/package/SKILL.md) · [Episode example](template/episode/episode.json)
 
-CI freezes a tag and commit of the latest published IRMind release, including pre-releases. It uses the real compiler, limits, policy, guard and engine, runs all 15 episodes and the existing hostile-content tests, verifies, seals and exports. Provider credentials are unnecessary. Private answers stay in `episodes/private/` and are opened only after the model finishes.
+CI freezes a tag and commit of the latest published IRMind release, including pre-releases. It uses the real compiler, limits, policy, guard and engine, runs every core and catalog episode and the existing hostile-content tests, verifies, seals and exports. Provider credentials are unnecessary. Private answers stay in `episodes/private/` and are opened only after the model finishes.
 
 The signed index contains only `catalog/`. Packages under `core/` arrive with each IRMind release and are not installable through `/skills install catalog:`. Propose core improvements here; a development script creates a pinned local mirror through a normal IRMind PR. The IRMind build never downloads packages.
 
