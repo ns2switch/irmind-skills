@@ -75,3 +75,5 @@ del siguiente índice de secuencia mayor y se explica en las notas. No añadas
 instrucciones sin firma ni campos que el formato del índice no soporte.
 
 La CI también compila el adaptador de firma de producción y comprueba que falla de forma cerrada sin credenciales. Esta prueba nunca solicita un secreto de producción.
+
+Antes de crear un tag de producción, ejecuta **Check catalog release protection (read only)** (`check-release-protection.yml`) sobre main. Usa el token del workflow para leer las protecciones, sin environment de despliegue ni acceso a secretos de firma. Resuelve cualquier fallo antes de publicar.

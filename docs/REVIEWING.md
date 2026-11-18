@@ -81,3 +81,5 @@ entry from the next higher-sequence index; explain it in the release notes. Do
 not add an unsigned instruction or invent unsupported index fields.
 
 CI also compiles the production signing adapter and checks that it fails closed in an empty credential environment. That check never requests a production secret.
+
+Before creating a production tag, run **Check catalog release protection (read only)** (`check-release-protection.yml`) on main. It uses the workflow token to read protection metadata and has no deployment environment or access to signing secrets. A failed check must be resolved before production publication.
