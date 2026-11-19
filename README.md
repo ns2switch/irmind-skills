@@ -16,7 +16,7 @@ Licensed under MIT OR Apache-2.0.
 
 ## Packages and validation
 
-There are **15 core packages** and **1 community example in catalog/**. A catalog entry becomes installable only after its signed release. The original v0.5.0 commitments are in the [inventory](core/package-identities.json) and [initial baseline](core/baseline.json).
+There are **23 core packages** and **1 community example in catalog/**. A catalog entry becomes installable only after its signed release. The original v0.5.0 commitments are in the [inventory](core/package-identities.json) and [initial baseline](core/baseline.json).
 
 | Skill | Declared sources |
 | --- | --- |

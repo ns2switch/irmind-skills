@@ -12,9 +12,9 @@ from package_contract import package_hash, resources, safe_data_path
 
 
 class RepositoryContracts(unittest.TestCase):
-    def test_all_fifteen_core_packages_match_the_current_inventory(self):
+    def test_all_core_packages_match_the_current_inventory(self):
         expected = json.loads((ROOT / 'core/package-identities.json').read_text())
-        self.assertEqual(len(expected), 15)
+        self.assertEqual(len(expected), 23)
         actual = {path.parent.name: package_hash(path.parent) for path in (ROOT / 'core').glob('*/SKILL.md')}
         self.assertEqual(actual, expected)
 
