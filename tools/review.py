@@ -49,13 +49,15 @@ def supported(irmind):
     return modules
 
 
-def review(root, baseline, irmind):
-    modules = supported(irmind)
+def review(root, baseline, irmind, core_irmind=None):
+    released_modules = supported(irmind)
+    core_modules = supported(core_irmind) if core_irmind else released_modules
     result = {'format_version': 1, 'packages': [], 'blocking': [], 'warnings': []}
     core = {path.parent.name for path in packages(root, 'core')}
     methods = [(family, path) for family in ('core', 'catalog') for path in packages(root, family)]
     if len(methods) > 1024: raise ValueError('too many packages')
     for family, path in methods:
+        modules = core_modules if family == 'core' else released_modules
         name = identifier(path.parent.name); meta = metadata(path.parent)
         semver(meta['version']); digest = package_hash(path.parent)
         row = {'family': family, 'name': name, 'version': meta['version'],
@@ -108,10 +110,12 @@ def main():
     p.add_argument('--root', type=Path, default=Path('.'))
     p.add_argument('--baseline', type=Path, required=True)
     p.add_argument('--irmind', type=Path, required=True)
+    p.add_argument('--core-irmind', type=Path)
     p.add_argument('--output', type=Path, required=True)
     args = p.parse_args()
     try:
-        result = review(args.root.resolve(), args.baseline.resolve(), args.irmind.resolve())
+        result = review(args.root.resolve(), args.baseline.resolve(), args.irmind.resolve(),
+                        args.core_irmind.resolve() if args.core_irmind else None)
     except (OSError, ValueError, KeyError, TypeError, IndexError):
         result = {'format_version': 1, 'packages': [], 'warnings': [],
                   'blocking': [{'name': 'repository', 'code': 'invalid-repository-data'}]}
