@@ -37,6 +37,11 @@
       "sha256": "6434cb7c320fbf511dee21e58e55e9729f2a679f6fde424e1ea2ecec2a7de767"
     },
     {
+      "source": "core/endpoint-edr-triage/references/coverage.csv",
+      "path": "skills/endpoint-edr-triage/references/coverage.csv",
+      "sha256": "f4f67bf1c56ec9283ddd0eeaf34221ba9d6cc4428e0082ebde5e2a3daa978b5f"
+    },
+    {
       "source": "core/gcp-service-account-abuse/SKILL.md",
       "path": "skills/gcp-service-account-abuse/SKILL.md",
       "sha256": "31c8d036f7f6025b9474ce84a882fff7bf1027e699a4bb083ba3030db7548c74"
@@ -52,9 +57,19 @@
       "sha256": "86560412faa037b98f72e7760e66f435d1b4f08482848c9517f8feda1ac54018"
     },
     {
+      "source": "core/github-supply-chain/references/coverage.csv",
+      "path": "skills/github-supply-chain/references/coverage.csv",
+      "sha256": "01023703ab444bd25aa79bc9593434acbabd6c907d07ec5030289ce65af099ea"
+    },
+    {
       "source": "core/google-workspace-compromise/SKILL.md",
       "path": "skills/google-workspace-compromise/SKILL.md",
       "sha256": "a0a5020429e8dd9a7aeeb2fd65c59928d13ac9a3531e92105cedbb0b0131d6a1"
+    },
+    {
+      "source": "core/google-workspace-compromise/references/coverage.csv",
+      "path": "skills/google-workspace-compromise/references/coverage.csv",
+      "sha256": "e6c1b7166d857fd88f5df359b3b3eb41734ec95c8fb2a356c6bb87f5776c8da6"
     },
     {
       "source": "core/k8s-cluster-compromise/SKILL.md",
@@ -112,9 +127,19 @@
       "sha256": "7c6575758acd395dca30e2b26aa2155babecea0567281a48df1c5bba41ae4d57"
     },
     {
+      "source": "core/m365-bec/references/coverage.csv",
+      "path": "skills/m365-bec/references/coverage.csv",
+      "sha256": "94047f798c7fddb42614d6b0efafbc07ceaaec1543e8cbe32a123bf6101fcfb3"
+    },
+    {
       "source": "core/macos-compromise/SKILL.md",
       "path": "skills/macos-compromise/SKILL.md",
       "sha256": "34aad6414ddb820333523d6a5125dd0f852e4b5459167b6cd7e440a9c59ce79a"
+    },
+    {
+      "source": "core/macos-compromise/references/coverage.csv",
+      "path": "skills/macos-compromise/references/coverage.csv",
+      "sha256": "650d0f8d23d7314aeac1639360e8d2db7fb0d2ed3426126a5ecdffda498dcc33"
     },
     {
       "source": "core/malware-execution-triage/SKILL.md",
@@ -142,14 +167,29 @@
       "sha256": "fa9c848087ae9867653ea056309d3124609755b4e3b45830d4a2559b272c8a31"
     },
     {
+      "source": "core/okta-identity-compromise/references/coverage.csv",
+      "path": "skills/okta-identity-compromise/references/coverage.csv",
+      "sha256": "591911a97557e98bbef2d3691563a891ac3c0915a4c761d732ed695f82daaa43"
+    },
+    {
       "source": "core/phishing-email-triage/SKILL.md",
       "path": "skills/phishing-email-triage/SKILL.md",
       "sha256": "a72d01d8d45a0ce7fbdec74164c441a4da13116f4704a81af7cd612ef107698f"
     },
     {
+      "source": "core/phishing-email-triage/references/coverage.csv",
+      "path": "skills/phishing-email-triage/references/coverage.csv",
+      "sha256": "f09c5dc212a5368504cc37873451d698481203e012faf21306f8d4f9642489bc"
+    },
+    {
       "source": "core/web-server-compromise/SKILL.md",
       "path": "skills/web-server-compromise/SKILL.md",
       "sha256": "68abcfed54afeaf649c207cada4bcfcbd68da5940b099e7f7b87cc8b88710236"
+    },
+    {
+      "source": "core/web-server-compromise/references/coverage.csv",
+      "path": "skills/web-server-compromise/references/coverage.csv",
+      "sha256": "dc552058c68e48c92d3fbeecf58f01d5a07183aed0aafffe5d2a3f9330b01385"
     },
     {
       "source": "core/windows-lateral-movement/SKILL.md",
