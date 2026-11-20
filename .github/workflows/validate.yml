@@ -45,7 +45,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           IRMIND_PUBLISHED_COMMIT: ${{ steps.release.outputs.commit }}
-          IRMIND_CORE_CANDIDATE: "10356f75e9bdcb963a6b1a5f58417421e76ebde5"
+          IRMIND_CORE_CANDIDATE: ""
         run: python3 -B tools/resolve_core_baseline.py
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         if: steps.core.outputs.temporary == 'true'
