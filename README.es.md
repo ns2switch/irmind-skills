@@ -16,7 +16,7 @@ Licencia MIT OR Apache-2.0.
 
 ## Paquetes y validación
 
-Hay **15 paquetes del núcleo** y **1 ejemplo comunitario en catalog/**. Una entrada solo se instala tras su release firmada. Los compromisos originales de v0.5.0 están en [el inventario](core/package-identities.json) y [la referencia inicial](core/baseline.json).
+Hay **23 paquetes del núcleo** y **1 ejemplo comunitario en catalog/**. Una entrada solo se instala tras su release firmada. Los compromisos originales de v0.5.0 están en [el inventario](core/package-identities.json) y [la referencia inicial](core/baseline.json).
 
 | Skill | Fuentes declaradas |
 | --- | --- |

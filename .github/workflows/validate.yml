@@ -40,6 +40,19 @@ jobs:
           ref: ${{ steps.release.outputs.commit }}
           path: irmind
           persist-credentials: false
+      - name: Verify the reviewed core episode baseline
+        id: core
+        env:
+          IRMIND_PUBLISHED_COMMIT: ${{ steps.release.outputs.commit }}
+          IRMIND_CORE_CANDIDATE: "10356f75e9bdcb963a6b1a5f58417421e76ebde5"
+        run: python3 -B tools/resolve_core_baseline.py
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: steps.core.outputs.temporary == 'true'
+        with:
+          repository: ns2switch/irmind
+          ref: ${{ steps.core.outputs.commit }}
+          path: irmind-core
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@035fceb3c12fb0c6a9461b52775e16473133e591
         with: {toolchain: '${{ steps.release.outputs.toolchain }}'}
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
@@ -62,7 +75,10 @@ jobs:
           git fetch --no-tags origin "$baseline"
           git worktree add --detach baseline "$baseline"
       - name: Check supported sources, versions and human-review notices
-        run: python3 -B tools/review.py --root . --baseline baseline --irmind irmind --output review-results.json
+        run: |
+          core=()
+          if [[ -d irmind-core ]]; then core=(--core-irmind irmind-core); fi
+          python3 -B tools/review.py --root . --baseline baseline --irmind irmind "${core[@]}" --output review-results.json
       - name: Preserve bounded data for the trusted PR reporter
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -70,8 +86,11 @@ jobs:
           name: skill-review-summary
           path: review-results.json
           if-no-files-found: ignore
-      - name: Use the released compiler and engine for every package episode
-        run: python3 -B tools/validate.py --irmind irmind
+      - name: Use the released compiler and run the bounded scripted episodes
+        run: |
+          core=()
+          if [[ -d irmind-core ]]; then core=(--core-irmind irmind-core); fi
+          python3 -B tools/validate.py --irmind irmind "${core[@]}"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: skill-validation-results

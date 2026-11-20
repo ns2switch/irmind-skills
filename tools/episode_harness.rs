@@ -255,6 +255,7 @@ fn case_store(path: &Path) -> Result<Arc<irmind_infra::LocalStore>> {
     for module in modules {
         registry.register(module, &ModuleConfig::new())?;
     }
+    // Insert reviewed late-source registrations here.
     Ok(Arc::new(irmind_infra::LocalStore::open_mapped(
         path,
         Arc::new(registry.mapping_catalog()?),

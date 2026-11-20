@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile and exercise repository packages against an immutable IRMind release."""
+"""Compile packages with the release and exercise their synthetic episodes."""
 import argparse
 import hashlib
 import json
@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 
 from package_contract import compile_package, package_hash, packages, safe_data_path
 
@@ -54,7 +55,36 @@ def overlay(repository, irmind):
         copy_exact(source, target)
 
 
-def validate(repository, irmind):
+def build_episode_engine(repository, checkout):
+    examples = checkout / 'crates/bin/examples'
+    data = (repository / 'tools/episode_harness.rs').read_bytes()
+    features = tomllib.loads((checkout / 'crates/bin/Cargo.toml').read_text())['features']
+    # The extended registration uses immutable modules in the checked-out engine.
+    # The published baseline before v0.5.5 uses an empty extension.
+    registration = b''
+    if 'parser-s3-access' in features:
+        registration = (repository / 'tools/episode_v055_sources.rs').read_bytes()
+    marker = b'    // Insert reviewed late-source registrations here.\n'
+    if data.count(marker) != 1:
+        raise ValueError('ambiguous episode adapter extension')
+    if registration:
+        data = data.replace(marker, b'    register_added_sources(&mut registry)?;\n')
+        data += b'\n' + registration
+    else:
+        data = data.replace(marker, b'')
+    adapter = examples / 'catalog_episode.rs'
+    if adapter.exists() and adapter.read_bytes() != data:
+        raise ValueError('checkout contains a different catalog adapter')
+    adapter.write_bytes(data)
+    run(['cargo', 'build', '-p', 'irmind', '--example', 'catalog_episode',
+         '--all-features', '--profile', 'ci', '--locked'], checkout)
+    metadata = json.loads(subprocess.check_output(
+        ['cargo', 'metadata', '--format-version', '1', '--no-deps', '--locked'],
+        cwd=checkout, text=True))
+    return Path(metadata['target_directory']) / 'ci/examples/catalog_episode'
+
+
+def validate(repository, irmind, core_irmind=None):
     for tree in ('core', 'catalog', 'episodes', 'metadata'):
         directory = repository / tree
         if directory.is_symlink():
@@ -91,15 +121,15 @@ def validate(repository, irmind):
             if not episode.is_file():
                 raise ValueError('package has no scripted synthetic episode')
             compiled.append({'family': family, 'name': meta['name'], 'sha256': digest})
-    overlay(repository, irmind)
-    adapter = irmind / 'crates/bin/examples/catalog_episode.rs'
-    if adapter.exists() and adapter.read_bytes() != (repository / 'tools/episode_harness.rs').read_bytes():
-        raise ValueError('release contains a different catalog adapter; review tool compatibility')
-    copy_exact(repository / 'tools/episode_harness.rs', adapter)
-    run(['cargo', 'build', '-p', 'irmind', '--example', 'catalog_episode',
-         '--all-features', '--profile', 'ci', '--locked'], irmind)
+    core_irmind = core_irmind or irmind
+    overlay(repository, core_irmind)
+    catalog_engine = build_episode_engine(repository, irmind)
+    core_engine = (catalog_engine if core_irmind == irmind
+                   else build_episode_engine(repository, core_irmind))
+    engines = {'catalog': (catalog_engine, irmind), 'core': (core_engine, core_irmind)}
     for row in compiled:
-        run([target / 'catalog_episode', repository, row['family'], row['name']], irmind)
+        engine, checkout = engines[row['family']]
+        run([engine, repository, row['family'], row['name']], checkout)
         row['scripted_episode'] = 'passed'
     # Exercise signed local admission as well when the production catalog is empty.
     # The test honestly uses Analyst origin; it does not invent publisher trust.
@@ -110,7 +140,7 @@ def validate(repository, irmind):
         shutil.copytree(repository / 'template/episode', sample / 'episodes/catalog' / name)
         shutil.copytree(repository / 'template/private', sample / 'episodes/private')
         compile_package(compiler, sample / 'catalog' / name)
-        run([target / 'catalog_episode', sample, 'catalog', name], irmind)
+        run([catalog_engine, sample, 'catalog', name], irmind)
     # Compile the publisher adapter without a credential. Even local validation
     # launches its absence check with a fresh environment containing only PATH.
     signer_source = repository / 'tools/production_signer.rs'
@@ -129,10 +159,12 @@ def validate(repository, irmind):
     run(['cargo', 'nextest', 'run', '-p', 'irmind', '--test', 'skills_runtime',
          '--all-features', '--cargo-profile', 'ci', '--locked', '--test-threads', '4',
          '-E', 'test(three_bundled_methods_complete) | test(/^support::catalog::.*_episode$/) | '
-               'test(rejects_hostile_evidence) | test(signed_untrusted_method)'], irmind)
+               'test(rejects_hostile_evidence) | test(signed_untrusted_method)'], core_irmind)
     (repository / 'validation-results.json').write_text(json.dumps({
         'format_version': 1, 'compiler_commit': subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'], cwd=irmind, text=True).strip(),
+        'core_engine_commit': subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=core_irmind, text=True).strip(),
         'provider_calls': 0, 'packages': compiled, 'template_signed_admission': 'passed',
     }, indent=2) + '\n')
     print(f'Validated {len(core)} core and {len(catalog)} catalog packages with the released compiler.')
@@ -141,8 +173,10 @@ def validate(repository, irmind):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--irmind', type=Path, required=True)
+    parser.add_argument('--core-irmind', type=Path)
     args = parser.parse_args()
     try:
-        validate(Path(__file__).resolve().parents[1], args.irmind.resolve())
+        validate(Path(__file__).resolve().parents[1], args.irmind.resolve(),
+                 args.core_irmind.resolve() if args.core_irmind else None)
     except (ValueError, subprocess.CalledProcessError) as error:
         sys.exit(str(error))
