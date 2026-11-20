@@ -26,6 +26,22 @@ class ReviewTests(unittest.TestCase):
         (self.root / 'metadata/aws-example.json').write_text(json.dumps({'minimum_irmind_version':'0.5.3', 'mappings':['mapping-cloudtrail'], 'coverage':{'status':'complete','description':'Synthetic CloudTrail'}}))
     def result(self): return review(self.root, self.base, self.irmind)
     def test_supported_entry_is_not_blocked(self): self.assertEqual(self.result()['blocking'], [])
+    def test_candidate_sources_can_extend_core_only(self):
+        candidate = self.irmind.parent / 'pinned-core'
+        shutil.copytree(self.irmind, candidate)
+        config = candidate / 'crates/bin/Cargo.toml'
+        config.write_text(config.read_text().replace('"parser-json"', '"parser-json", "parser-next"'))
+        skill = self.method / 'SKILL.md'
+        text = skill.read_text().replace('sources = ["parser-json"]', 'sources = ["parser-next"]')
+        skill.write_text(text)
+        core = self.root / 'core/core-test'
+        core.mkdir()
+        (core / 'SKILL.md').write_text(text.replace('name = "aws-example"', 'name = "core-test"'))
+        result = review(self.root, self.base, self.irmind, candidate)
+        self.assertEqual(result['blocking'], [
+            {'name': 'aws-example', 'code': 'unsupported-source'},
+        ])
+
     def test_unknown_source_is_blocking(self):
         p=self.method/'SKILL.md';p.write_text(p.read_text().replace('sources = ["parser-json"]', 'sources = ["parser-not-implemented"]'))
         self.assertIn('unsupported-source', [x['code'] for x in self.result()['blocking']])
