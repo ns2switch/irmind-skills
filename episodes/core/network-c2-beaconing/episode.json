@@ -9,6 +9,10 @@
     {
       "file": "eve.jsonl",
       "parser": "parser-suricata"
+    },
+    {
+      "file": "route53.ndjson",
+      "parser": "parser-route53"
     }
   ],
   "cluster": null,
@@ -60,6 +64,21 @@
             "hash": "$source:0",
             "index": "0",
             "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "resolver.example.test",
+            "event_category": "network",
+            "event_outcome": "success",
+            "entity_role": "source",
+            "limit": "20"
           }
         }
       ]

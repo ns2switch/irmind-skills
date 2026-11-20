@@ -9,6 +9,10 @@
     {
       "file": "cloud-audit.json",
       "parser": "parser-gcp-audit"
+    },
+    {
+      "file": "gcp-flows.ndjson",
+      "parser": "parser-gcp-flow"
     }
   ],
   "cluster": null,
@@ -60,6 +64,20 @@
             "hash": "$source:1",
             "index": "0",
             "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "203.0.113.77",
+            "event_category": "network",
+            "entity_role": "source",
+            "limit": "20"
           }
         }
       ]

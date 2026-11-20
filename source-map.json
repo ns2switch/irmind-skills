@@ -4,7 +4,7 @@
     {
       "source": "core/aws-credential-compromise/SKILL.md",
       "path": "skills/aws-credential-compromise/SKILL.md",
-      "sha256": "61fb1f10e232c0d16d098dd2cf2b3c0d59732085b80cbad41168716c8fda9c77"
+      "sha256": "0ff25ef776e6d9c399f78fcf9b074e8894ff77996a20bd54504a8f8c7857175c"
     },
     {
       "source": "core/aws-credential-compromise/references/operations.csv",
@@ -14,7 +14,7 @@
     {
       "source": "core/aws-s3-data-exfiltration/SKILL.md",
       "path": "skills/aws-s3-data-exfiltration/SKILL.md",
-      "sha256": "47e9d55933e25652a75facd743ffd86d02a7da0be4a8f4cde4f4c7def59fd417"
+      "sha256": "d7175e0b951f2ae843c4c46613f8002fc9a4e287f09af013ab1d3b2fa507796d"
     },
     {
       "source": "core/aws-s3-data-exfiltration/references/coverage.csv",
@@ -24,7 +24,7 @@
     {
       "source": "core/azure-entra-identity-compromise/SKILL.md",
       "path": "skills/azure-entra-identity-compromise/SKILL.md",
-      "sha256": "096a44cd0737ae97ba081aa226c918d25ed0027e452cb96a6e0a492223905347"
+      "sha256": "9d15fc24b7dc1415470ffe470c07b8944688874e92505f799ae94360bb38c236"
     },
     {
       "source": "core/azure-entra-identity-compromise/references/coverage.csv",
@@ -44,7 +44,7 @@
     {
       "source": "core/gcp-service-account-abuse/SKILL.md",
       "path": "skills/gcp-service-account-abuse/SKILL.md",
-      "sha256": "31c8d036f7f6025b9474ce84a882fff7bf1027e699a4bb083ba3030db7548c74"
+      "sha256": "25459fa7e7fc9da3f54ca42b57c7846a817b0367b1da687d0d379e0917b0fb45"
     },
     {
       "source": "core/gcp-service-account-abuse/references/coverage.csv",
@@ -154,7 +154,7 @@
     {
       "source": "core/network-c2-beaconing/SKILL.md",
       "path": "skills/network-c2-beaconing/SKILL.md",
-      "sha256": "29ae5da5f604e8d5b5d6888d1395cb1b94440f55a10608636ec7a84cb0178d60"
+      "sha256": "cf3747b3ceaa6319ca28c6685a942060f245a7883b4c6b39b1661059364e28d7"
     },
     {
       "source": "core/network-c2-beaconing/references/coverage.csv",
@@ -232,14 +232,64 @@
       "sha256": "9f72451d839e420826a51dd47e29b4aab043da7e20c57dad50d753ac8b2fcaed"
     },
     {
+      "source": "episodes/core/aws-credential-compromise/episode.json",
+      "path": "crates/testkit/fixtures/skills-v055/aws-credential-compromise/episode.json",
+      "sha256": "d7f3c80280d1d766af1325096333e9b6b28b93166e78bcd480058ffb42fd6bdb"
+    },
+    {
+      "source": "episodes/core/aws-credential-compromise/source/flows.log",
+      "path": "crates/testkit/fixtures/skills-v055/aws-credential-compromise/source/flows.log",
+      "sha256": "dcb462331fe9db110564ecf9e8c1a5f25d5c09ab09a453b25dbd4cdd04f1b2c7"
+    },
+    {
+      "source": "episodes/core/aws-credential-compromise/source/guardduty.ndjson",
+      "path": "crates/testkit/fixtures/skills-v055/aws-credential-compromise/source/guardduty.ndjson",
+      "sha256": "db73b4203f1807872162ff00af596a4086e06365f754d86bf6460e49b62d6d82"
+    },
+    {
       "source": "episodes/core/aws-credential-compromise/source/hunteval-aws-iam-001.json",
       "path": "crates/modules/parser-json/tests/fixtures/hunteval-aws-iam-001.json",
       "sha256": "f3bb0e0b52d86b5760dd69163479d3eeb4e97b1e6e81ab922127aa8d2646831d"
     },
     {
+      "source": "episodes/core/aws-credential-compromise/source/s3.log",
+      "path": "crates/testkit/fixtures/skills-v055/aws-credential-compromise/source/s3.log",
+      "sha256": "4c2729edc56f3fc001dec633b24833ca93673f8d7ea73011eeab9e1493d40da5"
+    },
+    {
+      "source": "episodes/core/aws-s3-data-exfiltration/episode.json",
+      "path": "crates/testkit/fixtures/skills-v055/aws-s3-data-exfiltration/episode.json",
+      "sha256": "42704fd3111269982d0202db88104f676cc99184be2ca3294e2a4458717dbfe3"
+    },
+    {
       "source": "episodes/core/aws-s3-data-exfiltration/source/cloudtrail.json",
       "path": "crates/testkit/fixtures/skills-expanded/aws-s3-data-exfiltration/source/cloudtrail.json",
       "sha256": "481076df50c0ef3e757c4b2337b63d4b82205a4b3af094a12b01ab4916e0571f"
+    },
+    {
+      "source": "episodes/core/aws-s3-data-exfiltration/source/flows.log",
+      "path": "crates/testkit/fixtures/skills-v055/aws-s3-data-exfiltration/source/flows.log",
+      "sha256": "dcb462331fe9db110564ecf9e8c1a5f25d5c09ab09a453b25dbd4cdd04f1b2c7"
+    },
+    {
+      "source": "episodes/core/aws-s3-data-exfiltration/source/guardduty.ndjson",
+      "path": "crates/testkit/fixtures/skills-v055/aws-s3-data-exfiltration/source/guardduty.ndjson",
+      "sha256": "db73b4203f1807872162ff00af596a4086e06365f754d86bf6460e49b62d6d82"
+    },
+    {
+      "source": "episodes/core/aws-s3-data-exfiltration/source/s3.log",
+      "path": "crates/testkit/fixtures/skills-v055/aws-s3-data-exfiltration/source/s3.log",
+      "sha256": "4c2729edc56f3fc001dec633b24833ca93673f8d7ea73011eeab9e1493d40da5"
+    },
+    {
+      "source": "episodes/core/azure-entra-identity-compromise/episode.json",
+      "path": "crates/testkit/fixtures/skills-v055/azure-entra-identity-compromise/episode.json",
+      "sha256": "b27abd0da77bc0e8e02d5076d916d15e47f977c667aa97b1696e5aadea05fe0b"
+    },
+    {
+      "source": "episodes/core/azure-entra-identity-compromise/source/azure-vnet.ndjson",
+      "path": "crates/testkit/fixtures/skills-v055/azure-entra-identity-compromise/source/azure-vnet.ndjson",
+      "sha256": "ff12e0c3801793cfaa71cb5e517c1252cb30b727ac3549bd8ca094ebf626762a"
     },
     {
       "source": "episodes/core/azure-entra-identity-compromise/source/entra-native.ndjson",
@@ -267,9 +317,19 @@
       "sha256": "833566d9e10c27829c97e1ef52fd5ed8c1630ac17a55ecf499d164c99950be2e"
     },
     {
+      "source": "episodes/core/gcp-service-account-abuse/episode.json",
+      "path": "crates/testkit/fixtures/skills-v055/gcp-service-account-abuse/episode.json",
+      "sha256": "7db1b08645e6417fd4bc109759f4c91bb2644bf36928ad0a89c805cbce8b980b"
+    },
+    {
       "source": "episodes/core/gcp-service-account-abuse/source/cloud-audit.json",
       "path": "crates/testkit/fixtures/skills-expanded/gcp-service-account-abuse/source/cloud-audit.json",
       "sha256": "760511b561b46ab90cbf93382dabf95f7620cff3acf2285d0a820e32403a584b"
+    },
+    {
+      "source": "episodes/core/gcp-service-account-abuse/source/gcp-flows.ndjson",
+      "path": "crates/testkit/fixtures/skills-v055/gcp-service-account-abuse/source/gcp-flows.ndjson",
+      "sha256": "c84731d46ed4ee0300009e0c8c677c6d6cb6422a30f9ef93b3451b1d83d96416"
     },
     {
       "source": "episodes/core/gcp-service-account-abuse/source/hunteval.json",
@@ -372,6 +432,11 @@
       "sha256": "d1ab4fa448ac9c3debe9aa0bd831aaf16b6ee32e0c06d06ed1470aeed55f07bf"
     },
     {
+      "source": "episodes/core/network-c2-beaconing/episode.json",
+      "path": "crates/testkit/fixtures/skills-v055/network-c2-beaconing/episode.json",
+      "sha256": "91d98c1709a2ab1bbe84245da93a1c7c42041c954ec625f0053c6f8b3953d1bf"
+    },
+    {
       "source": "episodes/core/network-c2-beaconing/source/conn.jsonl",
       "path": "crates/testkit/fixtures/skills-expanded/network-c2-beaconing/source/conn.jsonl",
       "sha256": "ac3d662e61c7c2fc5f68cc3b1ed50c8381d8964a44fe6d1866eebba5b0a23bfc"
@@ -380,6 +445,11 @@
       "source": "episodes/core/network-c2-beaconing/source/eve.jsonl",
       "path": "crates/testkit/fixtures/skills-expanded/network-c2-beaconing/source/eve.jsonl",
       "sha256": "63959b1f2241e0dbdd1208c30ebedc3e6b45ad0b8eb00881a2b29f9a24ac7d0a"
+    },
+    {
+      "source": "episodes/core/network-c2-beaconing/source/route53.ndjson",
+      "path": "crates/testkit/fixtures/skills-v055/network-c2-beaconing/source/route53.ndjson",
+      "sha256": "56ef5f6addb3d9bc93de370630438f06acf4ff8d1e20a5b1ee3ab6b854634142"
     },
     {
       "source": "episodes/core/okta-identity-compromise/episode.json",

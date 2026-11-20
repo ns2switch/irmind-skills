@@ -21,7 +21,7 @@ class ReviewTests(unittest.TestCase):
         for tree in (self.root, self.base):
             (tree / 'core').mkdir(parents=True); (tree / 'catalog').mkdir(); (tree / 'metadata').mkdir()
         self.method = self.root / 'catalog/aws-example'; self.method.mkdir()
-        skill = (ROOT / 'core/aws-credential-compromise/SKILL.md').read_text().replace('aws-credential-compromise', 'aws-example')
+        skill = (ROOT / 'template/package/SKILL.md').read_text().replace('community-example-method', 'aws-example')
         (self.method / 'SKILL.md').write_text(skill)
         (self.root / 'metadata/aws-example.json').write_text(json.dumps({'minimum_irmind_version':'0.5.3', 'mappings':['mapping-cloudtrail'], 'coverage':{'status':'complete','description':'Synthetic CloudTrail'}}))
     def result(self): return review(self.root, self.base, self.irmind)

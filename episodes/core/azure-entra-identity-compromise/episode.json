@@ -13,6 +13,10 @@
     {
       "file": "entra-signin.ndjson",
       "parser": "parser-entra"
+    },
+    {
+      "file": "azure-vnet.ndjson",
+      "parser": "parser-azure-flow"
     }
   ],
   "cluster": null,
@@ -64,6 +68,20 @@
             "hash": "$source:1",
             "index": "0",
             "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "203.0.113.77",
+            "event_category": "network",
+            "entity_role": "source",
+            "limit": "20"
           }
         }
       ]

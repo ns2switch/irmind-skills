@@ -5,6 +5,18 @@
     {
       "file": "hunteval-aws-iam-001.json",
       "parser": "parser-json"
+    },
+    {
+      "file": "guardduty.ndjson",
+      "parser": "parser-guardduty"
+    },
+    {
+      "file": "flows.log",
+      "parser": "parser-vpc-flow"
+    },
+    {
+      "file": "s3.log",
+      "parser": "parser-s3-access"
     }
   ],
   "cluster": null,
@@ -52,6 +64,21 @@
             "hash": "$source:0",
             "index": "0",
             "view": "original"
+          }
+        }
+      ]
+    },
+    {
+      "text": "",
+      "calls": [
+        {
+          "tool": "text_search",
+          "args": {
+            "query": "REST.GET.OBJECT",
+            "event_category": "web",
+            "event_outcome": "success",
+            "entity_role": "actor",
+            "limit": "20"
           }
         }
       ]
