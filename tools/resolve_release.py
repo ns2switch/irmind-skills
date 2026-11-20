@@ -9,7 +9,7 @@ import tomllib
 
 
 def api(path):
-    return json.loads(subprocess.check_output(['gh', 'api', path], text=True))
+    return json.loads(subprocess.check_output(['gh', 'api', path], text=True, timeout=20))
 
 
 def resolve():

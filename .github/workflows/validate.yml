@@ -43,6 +43,7 @@ jobs:
       - name: Verify the reviewed core episode baseline
         id: core
         env:
+          GH_TOKEN: ${{ github.token }}
           IRMIND_PUBLISHED_COMMIT: ${{ steps.release.outputs.commit }}
           IRMIND_CORE_CANDIDATE: "10356f75e9bdcb963a6b1a5f58417421e76ebde5"
         run: python3 -B tools/resolve_core_baseline.py

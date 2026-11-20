@@ -1,17 +1,8 @@
 """Accept only the reviewed core candidate from the protected engine branch."""
-import json
 import os
 import re
-from urllib.request import Request, urlopen
 
-
-def api(path):
-    # These checks use only the public repository and Actions metadata. The
-    # validation workflow needs no Actions token or cross-repository grants.
-    request = Request('https://api.github.com/' + path,
-                      headers={'Accept': 'application/vnd.github+json'})
-    with urlopen(request, timeout=20) as response:
-        return json.load(response)
+from resolve_release import api
 
 
 def core_baseline(candidate, release, get=api):
